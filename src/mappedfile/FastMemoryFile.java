@@ -16,17 +16,15 @@ import java.nio.file.Paths;
 public class FastMemoryFile implements MemoryFile
 {
     protected final DynamicByteArray _arr = new DynamicByteArray();
-    private final String filename;
+    private String filename = null;
 
     /**
      * Factory Constructor
      * @param fname file name
      */
-    public static FastMemoryFile load(String fname)
+    public void load(String fname)
     {
-        FastMemoryFile fm = new FastMemoryFile(fname);
-        fm._arr.setArray(fromFile(fname));
-        return fm;
+        _arr.setArray(fromFile(fname));
     }
 
     /**
@@ -35,15 +33,24 @@ public class FastMemoryFile implements MemoryFile
      */
     public FastMemoryFile(String fname) 
     {
-        filename = fname;
+        setName(fname);
+    }
+
+    public FastMemoryFile()
+    {
     }
 
     public FastMemoryFile (String fname, FastMemoryFile src)
     {
-        filename = fname;
+        setName(fname);
         _arr.setArray(src.clone());
     }
-    
+
+    public void setName (String name)
+    {
+        filename = name;
+    }
+
     /**
      * Loads file into byte array
      * @param fname name of file
@@ -102,6 +109,8 @@ public class FastMemoryFile implements MemoryFile
     @Override
     public void close() throws Exception
     {
+        if (filename == null)
+            throw new RuntimeException("Nameless Object");
         this.toFile(filename, _arr.getArray());
     }
 
@@ -121,6 +130,11 @@ public class FastMemoryFile implements MemoryFile
     public void fillArea (long address, byte b, int length) throws Exception
     {
         _arr.fill((int)address, b, length);
+    }
+
+    public void clearAll ()
+    {
+        _arr.clear();
     }
 
     @Override

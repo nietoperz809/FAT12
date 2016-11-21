@@ -21,22 +21,44 @@ public final class Disk
         return b;
     }
 
-    public static Disk load (String path)
+    public static Disk load (String path) throws Exception
     {
         Disk d = new Disk();
-        d._fmf = FastMemoryFile.load(path);
+        d._fmf.load(path);
+//        d._dir = new Directory(d._fmf);
+//        d._fat = new Fat12(d._fmf);
         return d;
     }
 
-    private Disk()
+    private Disk() throws Exception
     {
-
+        _fmf = new FastMemoryFile();
+        _fmf.setLength(byteLength);
     }
 
-    public Disk (String name)
+    public Disk (String name) throws Exception
     {
-        _fmf = new FastMemoryFile(name);
-        _fmf.setLength(byteLength);
+        super();
+        _fmf.setName(name);
+    }
+
+    public FastMemoryFile getFile (String filename) throws Exception
+    {
+        FastMemoryFile out = new FastMemoryFile();
+        Fat12 fat = new Fat12(_fmf);
+        Directory d = new Directory(_fmf);
+        DirectoryEntry de = d.seekFile(filename);
+        if (de == null)
+            return null;
+
+        System.out.println(de.fileSize);
+        byte[] sect = DiskRW.readPartialSector (_fmf, de.firstLogicalCluster+31, (int)de.fileSize);
+        String s = new String (sect);
+        System.out.println(s);
+
+        System.out.println("Startsektor"+de.firstLogicalCluster);
+
+        return null;
     }
 
     public String dir() throws Exception
@@ -47,6 +69,7 @@ public final class Disk
 
     public void format() throws Exception
     {
+        _fmf.clearAll();
         _fmf.write(0, BootBlock.dos622BootSector);
         _fmf.write(0x27, getFourRandomBytes());  // serial number
         _fmf.write(0x200, fatInitBytes);        // fat 1

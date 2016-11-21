@@ -67,6 +67,8 @@ public class FloppyMaster
         String list = d.dir();
         System.out.println(list);
 
+        d.getFile("win.ini");
+
 ////        MemoryFile mf = FloppyMaster.makeDos622Disk("c:\\myWinnt.img");
 ////        printBootSector(mf);
 ////        mf = FloppyMaster.makeWinNt351Disk("c:\\myWinnt.img");

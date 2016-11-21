@@ -17,6 +17,12 @@ public class DiskRW
         return fm.read(sectorNumber*512, 512);
     }
 
+    public static byte[] readPartialSector (FastMemoryFile fm, int sectorNumber, int len) throws Exception
+    {
+        return fm.read(sectorNumber*512, len);
+    }
+
+
     public static byte[] readSectors (FastMemoryFile fm, int sectorNumber, int num) throws Exception
     {
         return fm.read(sectorNumber*512, 512*num);

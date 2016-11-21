@@ -136,6 +136,14 @@ public class DynamicByteArray
         put (address, bytes);
     }
 
+    public void clear()
+    {
+        if (getCurrentSize() > 0)
+        {
+            theArray = new byte[theArray.length];
+        }
+    }
+
     /**
      * Reads bytes from array
      * @param address address to be read from
