@@ -1,5 +1,6 @@
 package fat;
 
+import bytearray.DynamicByteArray;
 import mappedfile.FastMemoryFile;
 
 import java.security.SecureRandom;
@@ -42,23 +43,15 @@ public final class Disk
         _fmf.setName(name);
     }
 
-    public FastMemoryFile getFile (String filename) throws Exception
+    public DynamicByteArray getFileData (String filename) throws Exception
     {
-        FastMemoryFile out = new FastMemoryFile();
+        DynamicByteArray out = new DynamicByteArray();
         Fat12 fat = new Fat12(_fmf);
         Directory d = new Directory(_fmf);
         DirectoryEntry de = d.seekFile(filename);
         if (de == null)
             return null;
-
-        System.out.println(de.fileSize);
-        byte[] sect = DiskRW.readPartialSector (_fmf, de.firstLogicalCluster+31, (int)de.fileSize);
-        String s = new String (sect);
-        System.out.println(s);
-
-        System.out.println("Startsektor"+de.firstLogicalCluster);
-
-        return null;
+        return fat.getFile(de);
     }
 
     public String dir() throws Exception

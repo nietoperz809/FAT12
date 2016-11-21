@@ -1,9 +1,6 @@
 package fat;
 
-import mappedfile.FastMemoryFile;
-import mappedfile.MemoryFile;
-
-import java.security.SecureRandom;
+import bytearray.DynamicByteArray;
 
 /**
 
@@ -67,7 +64,8 @@ public class FloppyMaster
         String list = d.dir();
         System.out.println(list);
 
-        d.getFile("win.ini");
+        DynamicByteArray data = d.getFileData("ntldr");
+        System.out.println(data.getCurrentSize());
 
 ////        MemoryFile mf = FloppyMaster.makeDos622Disk("c:\\myWinnt.img");
 ////        printBootSector(mf);
