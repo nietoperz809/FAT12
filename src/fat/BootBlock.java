@@ -202,14 +202,14 @@ public final class BootBlock
                 return "8\", 250 kB";
             if (bytesPerSector == 1024)
                 return "8\", 1200 kB";
-            if (bytesPerSector == 512)
+            if (bytesPerSector == Fat12.CLUSTERSIZE)
                 return "5.25\", 160 kB";
         }
         if (mediaID == 0xfd)
         {
             if (bytesPerSector == 128)
                 return "8\", 500 kB";
-            if (bytesPerSector == 512)
+            if (bytesPerSector == Fat12.CLUSTERSIZE)
                 return "5.25\", 360 kB";
         }
         if (mediaID == 0xfc)

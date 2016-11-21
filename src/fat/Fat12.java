@@ -10,6 +10,10 @@ public final class Fat12
 {
     private final byte[] _fat;
     FastMemoryFile _fmf;
+
+    public static final int CLUSTERSIZE = 512;
+    public static final int SECTORSIZE = 512;
+
     public Fat12 (FastMemoryFile fmf) throws Exception
     {
         _fmf = fmf;
@@ -38,8 +42,8 @@ public final class Fat12
     {
         DynamicByteArray out = new DynamicByteArray();
 
-        int blocks = (int)de.fileSize / 512;
-        int remainder = (int)de.fileSize % 512;
+        int blocks = (int)de.fileSize / Fat12.CLUSTERSIZE;
+        int remainder = (int)de.fileSize % Fat12.CLUSTERSIZE;
 
         int cluster = de.firstLogicalCluster;
         byte[] bytes;

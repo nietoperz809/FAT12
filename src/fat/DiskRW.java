@@ -3,28 +3,27 @@ package fat;
 import mappedfile.FastMemoryFile;
 
 /**
- * Created by Administrator on 11/21/2016.
+ * R/W functions
  */
 public class DiskRW
 {
     public static void writeSectors (FastMemoryFile fm, int sectorNumber, byte data[]) throws Exception
     {
-        fm.write (sectorNumber*512, data);
+        fm.write (sectorNumber*Fat12.SECTORSIZE, data);
     }
 
     public static byte[] readSector (FastMemoryFile fm, int sectorNumber) throws Exception
     {
-        return fm.read(sectorNumber*512, 512);
+        return fm.read(sectorNumber*Fat12.SECTORSIZE, Fat12.SECTORSIZE);
     }
 
     public static byte[] readPartialSector (FastMemoryFile fm, int sectorNumber, int len) throws Exception
     {
-        return fm.read(sectorNumber*512, len);
+        return fm.read(sectorNumber*Fat12.SECTORSIZE, len);
     }
-
 
     public static byte[] readSectors (FastMemoryFile fm, int sectorNumber, int num) throws Exception
     {
-        return fm.read(sectorNumber*512, 512*num);
+        return fm.read(sectorNumber*Fat12.SECTORSIZE, Fat12.SECTORSIZE*num);
     }
 }
