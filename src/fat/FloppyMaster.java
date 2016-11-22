@@ -58,17 +58,24 @@ class FloppyMaster
 
     //////////////////////////////////////////////////////////////////
 
-    public static void main (String[] args) throws Exception
+    public static void main (String[] args)
     {
-        Disk d = Disk.load("c:\\manipulated.img");
+        try
+        {
+            Disk d = Disk.load("c:\\manipulated.img");
+            d.format("halloweltdubistcool");
 
-        byte[] buff = new byte[123456];
-        d.putFile("wixx", "x", buff);
-        String list = d.dir();
-        System.out.println(list);
+            byte[] buff = new byte[123456];
+            d.putFile("wixx", "x", buff);
+            String list = d.dir();
+            System.out.println(list);
 
-        d.saveTo("c:\\manipulated.img");
-
+            d.saveTo("c:\\manipulated.img");
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
         //BootBlock.printBootSector(d.getBootSector());
 
 //

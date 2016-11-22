@@ -79,7 +79,7 @@ final class Directory
         {
             DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
             if (de.nullEntry)
-                return null;
+                throw new RuntimeException("file not found");
             if (de.getFullName().equals(fname))
                 return de;
         }

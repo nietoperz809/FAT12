@@ -19,6 +19,7 @@ final class Fat12
     public static final int MAXENTRY_1440KB = 2880;
     public static final int CLUSTERSIZE = 512;
     public static final int SECTORSIZE = 512;
+    public static final int DATAOFFSET = 31;
 
     public Fat12 (FastMemoryFile fmf) throws Exception
     {
@@ -67,13 +68,13 @@ final class Fat12
         byte[] bytes;
         for (int s=0; s<blocks; s++)
         {
-            bytes = DiskRW.readSector(_fmf, cluster+31);
+            bytes = DiskRW.readSector(_fmf, cluster+DATAOFFSET);
             out.append(bytes);
             cluster = Fat12Entry.getFatEntryValue(_fat, cluster);
         }
         if (remainder != 0)
         {
-            bytes = DiskRW.readPartialSector(_fmf, cluster+31, remainder);
+            bytes = DiskRW.readPartialSector(_fmf, cluster+DATAOFFSET, remainder);
             out.append(bytes);
         }
         return out;

@@ -54,6 +54,25 @@ public class DirectoryEntry
      */
     public static final int DIRENTRYSIZE = 32;
 
+    public static final int READONLY = 0x01;
+    public static final int HIDDEN = 0x02;
+    public static final int SYSTEM = 0x04;
+    public static final int VOLUMELABEL = 0x08;
+    public static final int SUBDIRECTORY = 0x10;
+    public static final int ARCHIVE = 0x20;
+
+    /**
+     * Create a volume label dir entry
+     * @param lab the label text
+     * @return a dir entry with that label
+     */
+    public static DirectoryEntry createVolumeLabel (String lab)
+    {
+        while (lab.length() < 11)
+            lab = lab+' ';
+        return create (lab.substring(0,8), lab.substring(8,11), 0,0, VOLUMELABEL);
+    }
+
     /**
      * Build a Dir entry from input
      * @param name File name
@@ -64,7 +83,8 @@ public class DirectoryEntry
      */
     public static DirectoryEntry create (String name, String ext,
                                          int fileSize,
-                                         int firstCluster)
+                                         int firstCluster,
+                                         int attributes)
     {
         DirectoryEntry d = new DirectoryEntry();
         d.RawData = new byte[DIRENTRYSIZE];
@@ -82,7 +102,7 @@ public class DirectoryEntry
             else
                 d.RawData[s+8] = (byte)' ';
         }
-        d.RawData[11] = 32;      // archive bit
+        d.RawData[11] = (byte)attributes;
         ByteCVT.toLE16(0, d.RawData, 14);
         ByteCVT.toLE16(0, d.RawData, 16);
         ByteCVT.toLE16(0, d.RawData, 18);
