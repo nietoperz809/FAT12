@@ -20,3 +20,4 @@ License:
 
 Useful stuff:
 - http://averstak.tripod.com/fatdox/dir.htm
+- http://www.disc.ua.es/~gil/FAT12Description.pdf
