@@ -17,3 +17,6 @@ Currently not implemented:
 
 License:
 - None. Do with the code whatever you want.
+
+Useful stuff:
+- http://averstak.tripod.com/fatdox/dir.htm
