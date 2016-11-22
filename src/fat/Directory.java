@@ -1,40 +1,65 @@
 package fat;
 
-import com.sun.javafx.event.DirectEvent;
 import mappedfile.FastMemoryFile;
 
 /**
- * Created by Administrator on 11/21/2016.
+ * Repesents FAT12 Directory
  */
 final class Directory
 {
-    private final byte[] _dir;
-    FastMemoryFile _fmf;
+    /**
+     * Copy of directora
+     */
+    private final byte[] directoryBytes;
+    /**
+     * Reference to FMF that holds entire disk
+     */
+    FastMemoryFile parentFMF;
 
-    public final static int LASTDIRENTRY = 224;
+    /**
+     * Number of Dir Entries
+     */
+    public final static int DIRENTRYCOUNT = 224;
+    /**
+     * Byte size of single Dir entry
+     */
+    public final static int DIRENTRYSIZE = 32;
 
+    /**
+     * Constructor
+     * @param fmf FMF containing disk file
+     * @throws Exception
+     */
     public Directory (FastMemoryFile fmf) throws Exception
     {
-        _fmf = fmf;
-        _dir = DiskRW.readDirectory(fmf);
+        parentFMF = fmf;
+        directoryBytes = DiskRW.readDirectory(fmf);
     }
 
+    /**
+     * Writes dir bytes back to Disk FMF
+     * @throws Exception
+     */
     public void writeBack() throws Exception
     {
-        DiskRW.writeDirectory (_fmf, _dir);
+        DiskRW.writeDirectory (parentFMF, directoryBytes);
     }
 
-    public byte[] getDataBlock()
-    {
-        return _dir;
-    }
+//    public byte[] getDataBlock()
+//    {
+//        return directoryBytes;
+//    }
 
+    /**
+     * List all files of master directory as human readable string
+     * @return string containing list
+     */
     public String list()
     {
         StringBuilder sb = new StringBuilder();
         for (int s=0; ; s++)
         {
-            DirectoryEntry de = new DirectoryEntry(_dir, s * 32);
+            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
             if (de.nullEntry)
                 break;
             sb.append(de.toString()).append('\n');
@@ -42,12 +67,17 @@ final class Directory
         return sb.toString();
     }
 
+    /**
+     * Seeks file by file name
+     * @param fname file name
+     * @return new Dir entry representing the file
+     */
     public DirectoryEntry seekFile (String fname)
     {
         fname = fname.toUpperCase();
         for (int s=0; ; s++)
         {
-            DirectoryEntry de = new DirectoryEntry(_dir, s * 32);
+            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
             if (de.nullEntry)
                 return null;
             if (de.getFullName().equals(fname))
@@ -55,18 +85,27 @@ final class Directory
         }
     }
 
+    /**
+     * Sets new dir entry at specified position
+     * @param de The new Dir Entry
+     * @param index index of position in dir table
+     */
     public void put (DirectoryEntry de, int index)
     {
         int offset = DirectoryEntry.DIRENTRYSIZE * index;
         byte[] dat = de.asArray();
-        System.arraycopy(dat,0,_dir,offset, DirectoryEntry.DIRENTRYSIZE);
+        System.arraycopy(dat,0, directoryBytes,offset, DirectoryEntry.DIRENTRYSIZE);
     }
 
+    /**
+     * Finds first free Dir index
+     * @return Found index or none (in this case an Exception is thrown)
+     */
     public int getFreeDirectoryEntryOffset ()
     {
-        for (int s=0; s<LASTDIRENTRY; s++)
+        for (int s = 0; s< DIRENTRYCOUNT; s++)
         {
-            DirectoryEntry de = new DirectoryEntry(_dir, s * 32);
+            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
             if (de.nullEntry || de.deleted)
                 return s;
         }

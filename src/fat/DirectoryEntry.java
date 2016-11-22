@@ -20,58 +20,86 @@ public class DirectoryEntry
     public int firstLogicalCluster;
     public long fileSize;
 
-    private byte[] _data = null;
+    private byte[] RawData = null;
 
-    public byte[] asArray()
-    {
-        return _data;
-    }
-
-    public static final int DIRENTRYSIZE = 32;
-
-    public static DirectoryEntry create (String name, String ext,
-                                         int fileSize,
-                                         int firstCluster)
-    {
-        DirectoryEntry d = new DirectoryEntry();
-        d._data = new byte[DIRENTRYSIZE];
-        for (int s=0; s<8; s++)
-        {
-            if (s < name.length())
-                d._data[s] = (byte) name.charAt(s);
-            else
-                d._data[s] = (byte)' ';
-        }
-        for (int s=0; s<3; s++)
-        {
-            if (s < ext.length())
-                d._data[s+8] = (byte) ext.charAt(s);
-            else
-                d._data[s+8] = (byte)' ';
-        }
-        d._data[11] = 32;      // archive bit
-        ByteCVT.toLE16(0, d._data, 14);
-        ByteCVT.toLE16(0, d._data, 16);
-        ByteCVT.toLE16(0, d._data, 18);
-        ByteCVT.toLE16(0, d._data, 22);
-        ByteCVT.toLE16(0, d._data, 24);
-        ByteCVT.toLE16(firstCluster, d._data, 26);
-        ByteCVT.toLE32(fileSize, d._data, 28);
-        d.constructMembers(d._data, 0);
-        return d;
-    }
-
-    public DirectoryEntry (byte[] array, int offset)
-    {
-        constructMembers(array, offset);
-    }
-
+    /**
+     * Empty Constructor made private
+     */
     private DirectoryEntry()
     {
 
     }
 
-    private void constructMembers (byte[] array, int offset)
+    /**
+     * Constructor from bigger array that contains a Directory Entry
+     * @param array Byte array
+     * @param offset Offset where the directory entry can be found
+     */
+    public DirectoryEntry (byte[] array, int offset)
+    {
+        fillMembers(array, offset);
+    }
+
+    /**
+     * Get Dir entry as array
+     * @return the dir entry as bytes
+     */
+    public byte[] asArray()
+    {
+        return RawData;
+    }
+
+    /**
+     * Number of bytes of single dir entry
+     */
+    public static final int DIRENTRYSIZE = 32;
+
+    /**
+     * Build a Dir entry from input
+     * @param name File name
+     * @param ext File extension
+     * @param fileSize File size
+     * @param firstCluster First cluster on disk
+     * @return Newly created Dir Entry
+     */
+    public static DirectoryEntry create (String name, String ext,
+                                         int fileSize,
+                                         int firstCluster)
+    {
+        DirectoryEntry d = new DirectoryEntry();
+        d.RawData = new byte[DIRENTRYSIZE];
+        for (int s=0; s<8; s++)
+        {
+            if (s < name.length())
+                d.RawData[s] = (byte) name.charAt(s);
+            else
+                d.RawData[s] = (byte)' ';
+        }
+        for (int s=0; s<3; s++)
+        {
+            if (s < ext.length())
+                d.RawData[s+8] = (byte) ext.charAt(s);
+            else
+                d.RawData[s+8] = (byte)' ';
+        }
+        d.RawData[11] = 32;      // archive bit
+        ByteCVT.toLE16(0, d.RawData, 14);
+        ByteCVT.toLE16(0, d.RawData, 16);
+        ByteCVT.toLE16(0, d.RawData, 18);
+        ByteCVT.toLE16(0, d.RawData, 22);
+        ByteCVT.toLE16(0, d.RawData, 24);
+        ByteCVT.toLE16(firstCluster, d.RawData, 26);
+        ByteCVT.toLE32(fileSize, d.RawData, 28);
+        d.fillMembers(d.RawData, 0);
+        return d;
+    }
+
+    /**
+     * Fill data memebers from byte array
+     * @param array byte array
+     * @param offset offest where the dir entry can be found
+     */
+    private void fillMembers (byte[] array, int offset)
     {
         nullEntry = (array[offset] == 0);
         if (nullEntry)
@@ -92,6 +120,10 @@ public class DirectoryEntry
         fileSize = ByteCVT.fromLE32(array, offset+28);
     }
 
+    /**
+     * Get Name.Ext
+     * @return String containing name+ext with a dot between them
+     */
     public String getFullName()
     {
         if (extension.isEmpty())
@@ -99,6 +131,10 @@ public class DirectoryEntry
         return fileName+"."+extension;
     }
 
+    /**
+     * Shows this dir entry in human readable form
+     * @return
+     */
     @Override
     public String toString()
     {

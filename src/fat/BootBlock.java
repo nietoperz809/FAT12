@@ -3,7 +3,7 @@ package fat;
 import mappedfile.MemoryFile;
 
 /**
- * Created by Administrator on 11/20/2016.
+ * Boot Block functions
  */
 final class BootBlock
 {
@@ -235,7 +235,7 @@ final class BootBlock
 
     public static void printBootSector (MemoryFile mf) throws Exception
     {
-        System.out.println("------------------- Boot Sector Info -- "+decodeSize(mf.read(0, 512))+ " --------");
+        System.out.println("------------------- Boot Sector Info -- "+decodeSize(mf.read(0, Fat12.SECTORSIZE))+ " --------");
         System.out.println("Bootstrap Jump        : " + hexString(mf.read(0, 3)));
         System.out.println("Manufacturer          : " + textHexString(mf.read(3, 8)));
         System.out.println("Bytes per Sector      : " + twoByteString(mf.read(0x0b, 2)));
