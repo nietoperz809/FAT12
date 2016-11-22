@@ -9,23 +9,67 @@ public class DirectoryEntry
 {
     public boolean deleted;
     public boolean nullEntry;
-    public String fileName;
-    public String extension;
-    public int attributes;
-    public int creationTime;
-    public int creationDate;
-    public int lastAccessData;
-    public int lastWriteTime;
-    public int lastWriteDate;
+    private String fileName;
+    private String extension;
+    private int attributes;
+    private int creationTime;
+    private int creationDate;
+    private int lastAccessData;
+    private int lastWriteTime;
+    private int lastWriteDate;
     public int firstLogicalCluster;
     public long fileSize;
 
+    private byte[] _data = null;
+
+    public static DirectoryEntry create (String name, String ext,
+                                         int fileSize,
+                                         int firstCluster)
+    {
+        DirectoryEntry d = new DirectoryEntry();
+        d._data = new byte[32];
+        for (int s=0; s<8; s++)
+        {
+            if (s < name.length())
+                d._data[s] = (byte) name.charAt(s);
+            else
+                d._data[s] = (byte)' ';
+        }
+        for (int s=0; s<3; s++)
+        {
+            if (s < ext.length())
+                d._data[s+8] = (byte) ext.charAt(s);
+            else
+                d._data[s+8] = (byte)' ';
+        }
+        d._data[11] = 32;      // archive bit
+        ByteCVT.toLE16(0, d._data, 14);
+        ByteCVT.toLE16(0, d._data, 16);
+        ByteCVT.toLE16(0, d._data, 18);
+        ByteCVT.toLE16(0, d._data, 22);
+        ByteCVT.toLE16(0, d._data, 24);
+        ByteCVT.toLE16(firstCluster, d._data, 26);
+        ByteCVT.toLE32(fileSize, d._data, 28);
+        d.getData (d._data, 0);
+        return d;
+    }
+
     public DirectoryEntry (byte[] array, int offset)
+    {
+        getData (array, offset);
+    }
+
+    private DirectoryEntry()
+    {
+
+    }
+
+    private void getData (byte[] array, int offset)
     {
         nullEntry = (array[offset] == 0);
         if (nullEntry)
             return;
-        deleted = (array[offset] == (byte)0xe5);
+        deleted = ((array[offset] == (byte)0xe5));
         if (deleted)
             fileName = "?"+new String (array, offset+1, 7).trim();
         else

@@ -16,8 +16,17 @@ public class DynamicByteArray
     /**
      * This is the array
      */
-    protected byte[] theArray = null;
-    
+    byte[] theArray = null;
+
+    public DynamicByteArray ()
+    {
+    }
+
+    public DynamicByteArray (byte[] dat)
+    {
+        theArray = dat;
+    }
+
     /**
      * Set a new array
      * @param arr the array
@@ -111,6 +120,12 @@ public class DynamicByteArray
         System.arraycopy (data, 0, theArray, address, data.length);
     }
 
+    public void put (int address, byte b)
+    {
+        byte b1[] = {b};
+        put (address, b1);
+    }
+
     /**
      * Inserts bytes at the end
      * @param data new data bytes
@@ -155,6 +170,40 @@ public class DynamicByteArray
         byte[] res = new byte[len];
         realloc (address + len);
         System.arraycopy (theArray, address, res, 0, len);
+        return res;
+    }
+
+    @Override
+    public String toString()
+    {
+        return Arrays.toString(theArray);
+    }
+
+    /**
+     * Splits this dynArray into fragments of specific size
+     * Last fragment can be smaller
+     * @param fragment max length of fragment
+     * @return array of dynArrays representing fragments
+     */
+    public DynamicByteArray[] split (int fragment)
+    {
+        int parts = getCurrentSize()/fragment;
+        int remain = getCurrentSize()%fragment;
+        int total = parts + (remain !=0 ? 1 : 0);
+        DynamicByteArray[] res = new DynamicByteArray[total];
+        int s = 0;
+        for (; s<parts; s++)
+        {
+            res[s] = new DynamicByteArray();
+            byte[] arr = this.get(s*fragment, fragment);
+            res[s].put(0, arr);
+        }
+        if (remain != 0)
+        {
+            res[s] = new DynamicByteArray();
+            byte[] arr = this.get(s*fragment, remain);
+            res[s].put(0, arr);
+        }
         return res;
     }
 }

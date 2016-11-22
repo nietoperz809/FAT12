@@ -14,10 +14,10 @@ import rangetest.Range;
  *
  * @author Administrator
  */
-public class MapList
+class MapList
 {
     private final RandomAccessFile _file;
-    AccumulatedRangeList maps = new AccumulatedRangeList();
+    private final AccumulatedRangeList maps = new AccumulatedRangeList();
     
     public MapList (RandomAccessFile f)
     {

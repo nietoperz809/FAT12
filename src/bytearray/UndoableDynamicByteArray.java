@@ -44,7 +44,7 @@ public class UndoableDynamicByteArray extends DynamicByteArray
         }
     }
 
-    public Enumeration<MemBlock> getMemBlocks()
+    private Enumeration<MemBlock> getMemBlocks ()
     {
         return Collections.enumeration(actionList);
     }

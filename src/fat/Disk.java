@@ -2,8 +2,10 @@ package fat;
 
 import bytearray.DynamicByteArray;
 import mappedfile.FastMemoryFile;
+import mappedfile.MemoryFile;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 11/21/2016.
@@ -13,7 +15,7 @@ public final class Disk
     private FastMemoryFile _fmf;
 
     private static final byte[] fatInitBytes = {(byte) 0xf0, (byte) 0xff, (byte) 0xff};
-    private static final int byteLength = 1474560;
+    private static final int DISKSIZE = 1474560;
 
     private static byte[] getFourRandomBytes ()
     {
@@ -31,21 +33,36 @@ public final class Disk
         return d;
     }
 
-    private Disk() throws Exception
+    private Disk()
     {
         _fmf = new FastMemoryFile();
-        _fmf.setLength(byteLength);
+        _fmf.setLength(DISKSIZE);
     }
 
-    public Disk (String name) throws Exception
+    public Disk (String name)
     {
         super();
         _fmf.setName(name);
     }
 
+    // TODO:
+    public void putFile (String filename, String ext, byte[] data) throws Exception
+    {
+        Fat12 fat = new Fat12(_fmf);
+        Directory d = new Directory(_fmf);
+        int freedir = d.getFreeDirectoryEntryOffset();
+
+        int blocks = data.length / Fat12.CLUSTERSIZE;
+        int remainder = data.length % Fat12.CLUSTERSIZE;
+        int total = blocks + (remainder !=0 ? 1 : 0);
+        ArrayList<Integer> freeList = fat.getFreeEntryList(total);
+        DynamicByteArray ba[] = new DynamicByteArray(data).split(Fat12.CLUSTERSIZE);
+        DirectoryEntry de = DirectoryEntry.create(filename, ext, data.length, freeList.get(0));
+
+    }
+
     public DynamicByteArray getFileData (String filename) throws Exception
     {
-        DynamicByteArray out = new DynamicByteArray();
         Fat12 fat = new Fat12(_fmf);
         Directory d = new Directory(_fmf);
         DirectoryEntry de = d.seekFile(filename);
@@ -73,5 +90,10 @@ public final class Disk
     public void close() throws Exception
     {
         _fmf.close();
+    }
+
+    MemoryFile getBootSector() throws Exception
+    {
+        return new FastMemoryFile("bootsect", _fmf, 0, Fat12.SECTORSIZE);
     }
 }

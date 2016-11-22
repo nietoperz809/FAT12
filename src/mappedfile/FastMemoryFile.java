@@ -4,6 +4,7 @@
 package mappedfile;
 
 import bytearray.DynamicByteArray;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +16,7 @@ import java.nio.file.Paths;
  */
 public class FastMemoryFile implements MemoryFile
 {
-    protected final DynamicByteArray _arr = new DynamicByteArray();
+    private final DynamicByteArray _arr = new DynamicByteArray();
     private String filename = null;
 
     /**
@@ -40,6 +41,19 @@ public class FastMemoryFile implements MemoryFile
     {
     }
 
+    public FastMemoryFile (String name, byte[] array)
+    {
+        setName (name);
+        _arr.setArray (array.clone());
+    }
+
+    public FastMemoryFile (String name, FastMemoryFile src, int start, int len) throws Exception
+    {
+        setName (name);
+        byte[] bytes = src.read(start, len);
+        _arr.setArray (bytes);
+    }
+
     public FastMemoryFile (String fname, FastMemoryFile src)
     {
         setName(fname);
@@ -56,7 +70,7 @@ public class FastMemoryFile implements MemoryFile
      * @param fname name of file
      * @return byte array filled with file content or null on error
      */
-    protected static byte[] fromFile(String fname)
+    private static byte[] fromFile (String fname)
     {
         try
         {
@@ -115,19 +129,19 @@ public class FastMemoryFile implements MemoryFile
     }
 
     @Override
-    public void insertBytes(long address, byte[] data) throws Exception
+    public void insertBytes(long address, byte[] data)
     {
         _arr.insert ((int)address, data);
     }
 
     @Override
-    public void deleteBytes(long address, int lenght) throws Exception
+    public void deleteBytes(long address, int lenght)
     {
         _arr.delete ((int)address, lenght);
     }
 
     @Override
-    public void fillArea (long address, byte b, int length) throws Exception
+    public void fillArea (long address, byte b, int length)
     {
         _arr.fill((int)address, b, length);
     }

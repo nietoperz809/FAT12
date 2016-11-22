@@ -5,7 +5,7 @@ import mappedfile.MemoryFile;
 /**
  * Created by Administrator on 11/20/2016.
  */
-public final class BootBlock
+final class BootBlock
 {
     public static final byte[] drDosBootSector =
             {

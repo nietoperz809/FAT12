@@ -3,41 +3,79 @@ package fat;
 import bytearray.DynamicByteArray;
 import mappedfile.FastMemoryFile;
 
+import java.util.ArrayList;
+
 /**
  * Implements handling of FAT part of the disk
  */
-public final class Fat12
+final class Fat12
 {
     private final byte[] _fat;
-    FastMemoryFile _fmf;
+    private final FastMemoryFile _fmf;
 
+    /**
+     * Last entry on 1.44 mb disk
+     */
+    public static final int MAXENTRY_1440KB = 2880;
     public static final int CLUSTERSIZE = 512;
     public static final int SECTORSIZE = 512;
 
     public Fat12 (FastMemoryFile fmf) throws Exception
     {
         _fmf = fmf;
-        _fat = DiskRW.readSectors (fmf, 1, 9);
+        _fat = DiskRW.readFAT1 (fmf);
     }
 
-    public void traverseFile (DirectoryEntry de)
+//    public void traverseFile (DirectoryEntry de)
+//    {
+//        int clusterNum = de.firstLogicalCluster;
+//        for (;;)
+//        {
+//            System.out.println(clusterNum);
+//            if (clusterNum <= 0x0fff && clusterNum >= 0x0ff8)
+//                break;
+//            if (clusterNum == 0)
+//                throw new RuntimeException("Unused Cluster");
+//            if (clusterNum <= 0x0ff6 && clusterNum >= 0x0ff0)
+//                throw new RuntimeException("Reserved Cluster");
+//            if (clusterNum == 0x0ff7)
+//                throw new RuntimeException("Bad Cluster");
+//            clusterNum = Fat12Entry.getFatEntryValue(_fat, clusterNum);
+//        }
+//    }
+
+    public ArrayList<Integer> getFreeEntryList (int needed)
     {
-        int clusterNum = de.firstLogicalCluster;
-        for (;;)
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int s=2; s<=MAXENTRY_1440KB; s++)
         {
-            System.out.println(clusterNum);
-            if (clusterNum <= 0x0fff && clusterNum >= 0x0ff8)
-                break;
-            if (clusterNum == 0)
-                throw new RuntimeException("Unused Cluster");
-            if (clusterNum <= 0x0ff6 && clusterNum >= 0x0ff0)
-                throw new RuntimeException("Reserved Cluster");
-            if (clusterNum == 0x0ff7)
-                throw new RuntimeException("Bad Cluster");
-            clusterNum = Fat12Entry.getFatEntryValue(_fat, clusterNum);
+            if (Fat12Entry.getFatEntryValue(_fat, s) == 0)
+                list.add(s);
+            if (list.size() == needed)
+                return list;
         }
+        throw new RuntimeException("Insufficient Disk Space");
     }
 
+    // TODO:
+    public void putFile (DirectoryEntry de,
+                         DynamicByteArray data,
+                         ArrayList<Integer> freelist)
+    {
+        int blocks = (int)de.fileSize / Fat12.CLUSTERSIZE;
+        int remainder = (int)de.fileSize % Fat12.CLUSTERSIZE;
+        int total = blocks + remainder !=0 ? 1 : 0;
+
+
+        DynamicByteArray[] frags = data.split(Fat12.CLUSTERSIZE);
+    }
+
+    /**
+     * Read file data of a file that is on the disk
+     * @param de DirEntry alread in Directory
+     * @return DynArray filled witd file data
+     * @throws Exception
+     */
     public DynamicByteArray getFile (DirectoryEntry de) throws Exception
     {
         DynamicByteArray out = new DynamicByteArray();

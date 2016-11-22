@@ -12,10 +12,6 @@ package fat;
  */
 public final class Fat12Entry
 {
-    public int toPhysicalSector (int s)
-    {
-        return 31 + s;
-    }
 
     /**
      * Reads upper 4 bits of 12 bit value

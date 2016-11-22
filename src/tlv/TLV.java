@@ -11,21 +11,21 @@ import java.util.Arrays;
  *
  * @author Administrator
  */
-public abstract class TLV
+abstract class TLV
 {
-    protected int _t = 0;
-    protected byte[] _v = new byte[0];
+    int _t = 0;
+    byte[] _v = new byte[0];
 
-    public TLV ()
+    TLV ()
     {
     }
 
-    public TLV (int t, byte[] v)
+    TLV (int t, byte[] v)
     {
         setTLV (t, v);
     }
 
-    public void setT(int t)
+    private void setT (int t)
     {
         _t = t;
     }
@@ -40,19 +40,19 @@ public abstract class TLV
         return Arrays.copyOf(_v, _t);
     }
     
-    public void setV (byte[] v)
+    private void setV (byte[] v)
     {
         _v = new byte[v.length];
         System.arraycopy (v, 0, _v, 0, v.length);
     }
     
-    public void setTLV (int t, byte[] v)
+    private void setTLV (int t, byte[] v)
     {
         setT(t);
         setV(v);
     }
     
-    abstract public byte[] toBytes();
+    protected abstract byte[] toBytes ();
     abstract public void fromBytes (byte[] b);
 
     @Override

@@ -19,7 +19,7 @@ public class RandomArrays
         public int address;
     }
     
-    private ArrayList<Chunk> chunks = new ArrayList<>();
+    private final ArrayList<Chunk> chunks = new ArrayList<>();
     
     public ArrayList<Chunk> getList()
     {

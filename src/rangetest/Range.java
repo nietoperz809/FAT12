@@ -36,7 +36,7 @@ public class Range
      * Length of range to - from
      * @return length
      */
-    public long length()
+    private long length ()
     {
         return to - from;
     }
@@ -100,8 +100,7 @@ public class Range
      */
     public Range combine (Range other) throws Exception
     {
-        Range r = new Range (Math.min(this.from, other.from), Math.max(this.to, other.to), this.host);
-        return r;
+        return new Range (Math.min(this.from, other.from), Math.max(this.to, other.to), this.host);
     }
 
     /**
@@ -114,8 +113,7 @@ public class Range
     {
         if (overlap(other))
         {
-            Range r = new Range (Math.max(this.from, other.from), Math.min(this.to, other.to), this.host);
-            return r;
+            return new Range (Math.max(this.from, other.from), Math.min(this.to, other.to), this.host);
         }
         return null;
     }
@@ -149,11 +147,10 @@ public class Range
     @Override
     public String toString()
     {
-        StringBuilder b = new StringBuilder();
-        b.append('(').append(this.from)
-                .append('/')
-                .append(this.to).append(')');
-        return b.toString();
+        String b = "(" + this.from +
+                '/' +
+                this.to + ')';
+        return b;
     }
 }
 

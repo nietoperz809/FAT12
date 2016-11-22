@@ -18,9 +18,9 @@ import java.nio.channels.FileChannel;
  */
 public class SlowMemoryFile1 implements MemoryFile
 {
-    protected RandomAccessFile _file = null;
+    RandomAccessFile _file = null;
 
-    public SlowMemoryFile1 (String fname) throws FileNotFoundException
+    SlowMemoryFile1 (String fname) throws FileNotFoundException
     {
         _file = new RandomAccessFile (new File(fname), "rw");
     }
@@ -60,19 +60,19 @@ public class SlowMemoryFile1 implements MemoryFile
     }
 
     @Override
-    public void insertBytes(long addess, byte[] data) throws Exception
+    public void insertBytes(long addess, byte[] data)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void deleteBytes(long address, int lenght) throws Exception
+    public void deleteBytes(long address, int lenght)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void fillArea (long address, byte b, int length) throws Exception
+    public void fillArea (long address, byte b, int length)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

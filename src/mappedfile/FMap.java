@@ -12,7 +12,7 @@ import rangetest.Range;
  *
  * @author Administrator
  */
-public class FMap
+class FMap
 {
     public ByteBuffer bytebuff = null;
     public long offset; /* changed */

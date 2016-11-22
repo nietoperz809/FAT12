@@ -13,7 +13,7 @@ import bytearray.DynamicByteArray;
  33-2879	  0x4200-0x167fff	   File storage space
 
  */
-public class FloppyMaster
+class FloppyMaster
 {
 
 //    private static final byte[] fatInitBytes = {(byte) 0xf0, (byte) 0xff, (byte) 0xff};
@@ -61,11 +61,17 @@ public class FloppyMaster
     public static void main (String[] args) throws Exception
     {
         Disk d = Disk.load("c:\\ntfat.img");
-        String list = d.dir();
-        System.out.println(list);
 
-        DynamicByteArray data = d.getFileData("ntldr");
-        System.out.println(data.getCurrentSize());
+        byte[] buff = new byte[10000];
+        d.putFile("test", "doof", buff);
+
+        //BootBlock.printBootSector(d.getBootSector());
+
+//        String list = d.dir();
+//        System.out.println(list);
+//
+//        DynamicByteArray data = d.getFileData("ntldr");
+//        System.out.println(data.getCurrentSize());
 
 ////        MemoryFile mf = FloppyMaster.makeDos622Disk("c:\\myWinnt.img");
 ////        printBootSector(mf);
