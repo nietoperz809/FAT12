@@ -190,13 +190,28 @@ public class DynamicByteArrayTest
         db.undo();
         db.printMemBocks();
     }
-
-
-    /////////////////////////////////////////////
-
-    @BeforeClass
-    public static void setUp () throws Exception
+   /////////////////////////////////////////////
+    @Test
+    public void splitTest() throws Exception
     {
-
+        DynamicByteArray arr = new DynamicByteArray();
+        byte[] b = new byte[100];
+        for (int s=0; s<100; s++ )
+            b[s] = (byte)s;
+        arr.put(0, b);
+        DynamicByteArray sp1[] = arr.split(10);
+        arr.put(100, (byte)4);
+        DynamicByteArray sp2[] = arr.split(10);
+        arr.put(101, (byte)4);
+        arr.put(102, (byte)4);
+        arr.put(103, (byte)4);
+        DynamicByteArray sp3[] = arr.split(10);
+        Assert.assertEquals(sp1.length, 10);
+        Assert.assertEquals(sp2.length, 11);
+        Assert.assertEquals(sp3.length, 11);
+        System.out.println(sp2[1]);
+        System.out.println(sp2[3]);
+        System.out.println(sp2[10]);
+        System.out.println(sp3[10]);
     }
 }

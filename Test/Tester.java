@@ -18,7 +18,7 @@ import org.junit.Test;
  *
  * @author Administrator
  */
-public class Tester
+class Tester
 {
     public static void test1  (MemoryFile mem) throws Exception
     {

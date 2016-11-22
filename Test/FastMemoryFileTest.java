@@ -1,7 +1,6 @@
 
 import mappedfile.FastMemoryFile;
 import org.junit.*;
-import org.junit.rules.TestRule;
 import org.junit.runners.MethodSorters;
 import org.junit.Assert;
 
@@ -11,9 +10,9 @@ import org.junit.Assert;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FastMemoryFileTest
 {
-    static FastMemoryFile memfile;
-    static byte[] testBytes;
-    static byte[] readBytes;
+    private static FastMemoryFile memfile;
+    private static byte[] testBytes;
+    private static byte[] readBytes;
 
 
     @Test
@@ -38,8 +37,8 @@ public class FastMemoryFileTest
     @Test
     public void a3_reopen () throws Exception
     {
-        memfile = null;
-        memfile = FastMemoryFile.load ("c:\\memfilexxx.txt");
+        memfile = new FastMemoryFile();
+        memfile.load ("c:\\memfilexxx.txt");
         Assert.assertNotNull(memfile);
     }
 
