@@ -8,11 +8,11 @@ Currently working:
 - Read and write files in master dir
 - Listing files in master dir
 - Generate disk images with various boot blocks
+- Set Volume Label
 
 Currently not implemented:
 - Subdirectories
 - Time/Date of files
-- Volume Labels
 - All other stuff that is not listed in the above section
 
 License:
