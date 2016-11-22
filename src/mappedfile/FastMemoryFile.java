@@ -28,6 +28,11 @@ public class FastMemoryFile implements MemoryFile
         _arr.setArray(fromFile(fname));
     }
 
+    public void saveCopyAs(String fname) throws Exception
+    {
+        toFile (fname,_arr.getArray() );
+    }
+
     /**
      * Constructor
      * @param fname file name
@@ -70,7 +75,7 @@ public class FastMemoryFile implements MemoryFile
      * @param fname name of file
      * @return byte array filled with file content or null on error
      */
-    private static byte[] fromFile (String fname)
+    public static byte[] fromFile (String fname)
     {
         try
         {
@@ -89,7 +94,7 @@ public class FastMemoryFile implements MemoryFile
      * @param in the byte array to be stored
      * @throws Exception if something goes wrong
      */
-    private void toFile(String fname, byte[] in) throws Exception
+    public static void toFile(String fname, byte[] in) throws Exception
     {
         if (in == null)
             return;

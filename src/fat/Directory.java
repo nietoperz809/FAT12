@@ -1,5 +1,6 @@
 package fat;
 
+import com.sun.javafx.event.DirectEvent;
 import mappedfile.FastMemoryFile;
 
 /**
@@ -8,12 +9,19 @@ import mappedfile.FastMemoryFile;
 final class Directory
 {
     private final byte[] _dir;
+    FastMemoryFile _fmf;
 
     public final static int LASTDIRENTRY = 224;
 
     public Directory (FastMemoryFile fmf) throws Exception
     {
+        _fmf = fmf;
         _dir = DiskRW.readDirectory(fmf);
+    }
+
+    public void writeBack() throws Exception
+    {
+        DiskRW.writeDirectory (_fmf, _dir);
     }
 
     public byte[] getDataBlock()
@@ -45,6 +53,13 @@ final class Directory
             if (de.getFullName().equals(fname))
                 return de;
         }
+    }
+
+    public void put (DirectoryEntry de, int index)
+    {
+        int offset = DirectoryEntry.DIRENTRYSIZE * index;
+        byte[] dat = de.asArray();
+        System.arraycopy(dat,0,_dir,offset, DirectoryEntry.DIRENTRYSIZE);
     }
 
     public int getFreeDirectoryEntryOffset ()

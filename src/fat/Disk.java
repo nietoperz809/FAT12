@@ -28,9 +28,12 @@ public final class Disk
     {
         Disk d = new Disk();
         d._fmf.load(path);
-//        d._dir = new Directory(d._fmf);
-//        d._fat = new Fat12(d._fmf);
         return d;
+    }
+
+    public void saveTo (String path) throws Exception
+    {
+        _fmf.saveCopyAs(path);
     }
 
     private Disk()
@@ -49,16 +52,36 @@ public final class Disk
     public void putFile (String filename, String ext, byte[] data) throws Exception
     {
         Fat12 fat = new Fat12(_fmf);
-        Directory d = new Directory(_fmf);
-        int freedir = d.getFreeDirectoryEntryOffset();
+        Directory directory = new Directory(_fmf);
+        int freedir = directory.getFreeDirectoryEntryOffset();
 
         int blocks = data.length / Fat12.CLUSTERSIZE;
         int remainder = data.length % Fat12.CLUSTERSIZE;
         int total = blocks + (remainder !=0 ? 1 : 0);
         ArrayList<Integer> freeList = fat.getFreeEntryList(total);
-        DynamicByteArray ba[] = new DynamicByteArray(data).split(Fat12.CLUSTERSIZE);
+        DynamicByteArray splits[] = new DynamicByteArray(data).split(Fat12.CLUSTERSIZE);
         DirectoryEntry de = DirectoryEntry.create(filename, ext, data.length, freeList.get(0));
 
+        directory.put (de, freedir);
+
+        for (int i=0; i<total; i++)
+        {
+            int sector = freeList.get(i);
+            int nextsector;
+            if (freeList.size() == i+1)
+            {
+                nextsector = 0x0fff;
+            }
+            else
+            {
+                nextsector = freeList.get(i + 1);
+            }
+            DiskRW.writeSectors(_fmf, sector+31, splits[i].getArray());
+            Fat12Entry.writeFatEntryValue (fat.getArray(), sector, nextsector);
+        }
+
+        directory.writeBack ();
+        fat.writeBack();
     }
 
     public DynamicByteArray getFileData (String filename) throws Exception

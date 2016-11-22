@@ -60,15 +60,17 @@ class FloppyMaster
 
     public static void main (String[] args) throws Exception
     {
-        Disk d = Disk.load("c:\\ntfat.img");
+        Disk d = Disk.load("c:\\manipulated.img");
 
-        byte[] buff = new byte[10000];
-        d.putFile("test", "doof", buff);
+        byte[] buff = new byte[123456];
+        d.putFile("wixx", "x", buff);
+        String list = d.dir();
+        System.out.println(list);
+
+        d.saveTo("c:\\manipulated.img");
 
         //BootBlock.printBootSector(d.getBootSector());
 
-//        String list = d.dir();
-//        System.out.println(list);
 //
 //        DynamicByteArray data = d.getFileData("ntldr");
 //        System.out.println(data.getCurrentSize());

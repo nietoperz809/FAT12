@@ -22,12 +22,19 @@ public class DirectoryEntry
 
     private byte[] _data = null;
 
+    public byte[] asArray()
+    {
+        return _data;
+    }
+
+    public static final int DIRENTRYSIZE = 32;
+
     public static DirectoryEntry create (String name, String ext,
                                          int fileSize,
                                          int firstCluster)
     {
         DirectoryEntry d = new DirectoryEntry();
-        d._data = new byte[32];
+        d._data = new byte[DIRENTRYSIZE];
         for (int s=0; s<8; s++)
         {
             if (s < name.length())
@@ -50,13 +57,13 @@ public class DirectoryEntry
         ByteCVT.toLE16(0, d._data, 24);
         ByteCVT.toLE16(firstCluster, d._data, 26);
         ByteCVT.toLE32(fileSize, d._data, 28);
-        d.getData (d._data, 0);
+        d.constructMembers(d._data, 0);
         return d;
     }
 
     public DirectoryEntry (byte[] array, int offset)
     {
-        getData (array, offset);
+        constructMembers(array, offset);
     }
 
     private DirectoryEntry()
@@ -64,7 +71,7 @@ public class DirectoryEntry
 
     }
 
-    private void getData (byte[] array, int offset)
+    private void constructMembers (byte[] array, int offset)
     {
         nullEntry = (array[offset] == 0);
         if (nullEntry)

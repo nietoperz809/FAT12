@@ -26,6 +26,16 @@ final class Fat12
         _fat = DiskRW.readFAT1 (fmf);
     }
 
+    public byte[] getArray()
+    {
+        return _fat;
+    }
+
+    public void writeBack() throws Exception
+    {
+        DiskRW.writeFAT1(_fmf, _fat);
+    }
+
 //    public void traverseFile (DirectoryEntry de)
 //    {
 //        int clusterNum = de.firstLogicalCluster;
@@ -55,19 +65,6 @@ final class Fat12
                 return list;
         }
         throw new RuntimeException("Insufficient Disk Space");
-    }
-
-    // TODO:
-    public void putFile (DirectoryEntry de,
-                         DynamicByteArray data,
-                         ArrayList<Integer> freelist)
-    {
-        int blocks = (int)de.fileSize / Fat12.CLUSTERSIZE;
-        int remainder = (int)de.fileSize % Fat12.CLUSTERSIZE;
-        int total = blocks + remainder !=0 ? 1 : 0;
-
-
-        DynamicByteArray[] frags = data.split(Fat12.CLUSTERSIZE);
     }
 
     /**
