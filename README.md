@@ -6,7 +6,8 @@ _My personal FAT12 Floppy FS :)_
 
 Currently working:
 - Read and write files in master dir
-- Listing files in master dir
+- List files in master dir
+- Delete files in master dir
 - Generate disk images with various boot blocks
 - Set Volume Label
 
