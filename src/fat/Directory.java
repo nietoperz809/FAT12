@@ -81,7 +81,10 @@ final class Directory
             if (de.nullEntry)
                 throw new RuntimeException("file not found");
             if (de.getFullName().equals(fname))
+            {
+                de.positionInDirectory = s;
                 return de;
+            }
         }
     }
 

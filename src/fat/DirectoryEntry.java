@@ -20,6 +20,8 @@ public class DirectoryEntry
     public int firstLogicalCluster;
     public long fileSize;
 
+    public int positionInDirectory; // Internal use
+
     private byte[] RawData = null;
 
     /**
@@ -37,7 +39,9 @@ public class DirectoryEntry
      */
     public DirectoryEntry (byte[] array, int offset)
     {
-        fillMembers(array, offset);
+        RawData = new byte[DIRENTRYSIZE];
+        System.arraycopy (array,offset, RawData,0,DIRENTRYSIZE);
+        fillMembers();
     }
 
     /**
@@ -60,6 +64,8 @@ public class DirectoryEntry
     public static final int VOLUMELABEL = 0x08;
     public static final int SUBDIRECTORY = 0x10;
     public static final int ARCHIVE = 0x20;
+    public static final byte DELETED = (byte)0xe5;
+
 
     /**
      * Create a volume label dir entry
@@ -110,34 +116,38 @@ public class DirectoryEntry
         ByteCVT.toLE16(0, d.RawData, 24);
         ByteCVT.toLE16(firstCluster, d.RawData, 26);
         ByteCVT.toLE32(fileSize, d.RawData, 28);
-        d.fillMembers(d.RawData, 0);
+        d.fillMembers();
         return d;
     }
 
     /**
      * Fill data memebers from byte array
-     * @param array byte array
-     * @param offset offest where the dir entry can be found
      */
-    private void fillMembers (byte[] array, int offset)
+    private void fillMembers ()
     {
-        nullEntry = (array[offset] == 0);
+        nullEntry = (RawData[0] == 0);
         if (nullEntry)
             return;
-        deleted = ((array[offset] == (byte)0xe5));
+        deleted = ((RawData[0] == DELETED));
         if (deleted)
-            fileName = "?"+new String (array, offset+1, 7).trim();
+            fileName = "?"+new String (RawData, 1, 7).trim();
         else
-            fileName = new String (array, offset, 8).trim();
-        extension = new String (array, offset+8, 3).trim();
-        attributes = array[offset+11];
-        creationTime = ByteCVT.fromLE16(array, offset+14);
-        creationDate = ByteCVT.fromLE16(array, offset+16);
-        lastAccessData = ByteCVT.fromLE16(array, offset+18);
-        lastWriteTime = ByteCVT.fromLE16(array, offset+22);
-        lastWriteDate = ByteCVT.fromLE16(array, offset+24);
-        firstLogicalCluster = ByteCVT.fromLE16(array, offset+26);
-        fileSize = ByteCVT.fromLE32(array, offset+28);
+            fileName = new String (RawData, 0, 8).trim();
+        extension = new String (RawData, 8, 3).trim();
+        attributes = RawData[11];
+        creationTime = ByteCVT.fromLE16(RawData, 14);
+        creationDate = ByteCVT.fromLE16(RawData, 16);
+        lastAccessData = ByteCVT.fromLE16(RawData, 18);
+        lastWriteTime = ByteCVT.fromLE16(RawData, 22);
+        lastWriteDate = ByteCVT.fromLE16(RawData, 24);
+        firstLogicalCluster = ByteCVT.fromLE16(RawData, 26);
+        fileSize = ByteCVT.fromLE32(RawData, 28);
+    }
+
+    public void markAsDeleted ()
+    {
+        deleted = true;
+        RawData[0] = DELETED;
     }
 
     /**
@@ -147,8 +157,8 @@ public class DirectoryEntry
     public String getFullName()
     {
         if (extension.isEmpty())
-            return fileName;
-        return fileName+"."+extension;
+            return fileName.toUpperCase();
+        return (fileName+"."+extension).toUpperCase();
     }
 
     /**

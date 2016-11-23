@@ -79,4 +79,20 @@ final class Fat12
         }
         return out;
     }
+
+    public void deleteFile (DirectoryEntry de) throws Exception
+    {
+        int blocks = (int)de.fileSize / Fat12.CLUSTERSIZE;
+        int remainder = (int)de.fileSize % Fat12.CLUSTERSIZE;
+        int total = blocks + (remainder !=0 ? 1: 0);
+
+        int cluster = de.firstLogicalCluster;
+        for (int s=0; s<total; s++)
+        {
+            int next = Fat12Entry.getFatEntryValue(_fat, cluster);
+            Fat12Entry.writeFatEntryValue(_fat, cluster, 0);
+            cluster = next;
+        }
+    }
+
 }

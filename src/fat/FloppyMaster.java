@@ -63,11 +63,16 @@ class FloppyMaster
         try
         {
             Disk d = Disk.load("c:\\manipulated.img");
+
             d.format("halloweltdubistcool");
 
             byte[] buff = new byte[123456];
             d.putFile("wixx", "x", buff);
             String list = d.dir();
+            System.out.println(list);
+
+            d.deleteFile("wixx.x");
+            list = d.dir();
             System.out.println(list);
 
             d.saveTo("c:\\manipulated.img");

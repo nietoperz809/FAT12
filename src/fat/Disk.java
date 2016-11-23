@@ -72,6 +72,7 @@ public final class Disk
      */
     public void setVolumeLabel (String label) throws Exception
     {
+        label = label.toUpperCase();
         while (label.length()<11)
             label = label+' ';
         if (label.length() > 11)
@@ -143,6 +144,19 @@ public final class Disk
         Directory d = new Directory(_fmf);
         DirectoryEntry de = d.seekFile(filename);
         return fat.getFile(de);
+    }
+
+    public void deleteFile (String filename) throws Exception
+    {
+        Fat12 fat = new Fat12(_fmf);
+        Directory directory = new Directory(_fmf);
+        DirectoryEntry de = directory.seekFile(filename);
+        de.markAsDeleted();
+        directory.put(de, de.positionInDirectory);
+        fat.deleteFile(de);
+
+        fat.writeBack();
+        directory.writeBack();
     }
 
     /**
