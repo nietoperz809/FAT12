@@ -60,7 +60,7 @@ final class Directory
         for (int s=0; ; s++)
         {
             DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
-            if (de.nullEntry)
+            if (de.isNull())
                 break;
             sb.append(de.toString()).append('\n');
         }
@@ -78,7 +78,7 @@ final class Directory
         for (int s=0; ; s++)
         {
             DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
-            if (de.nullEntry)
+            if (de.isNull())
                 throw new RuntimeException("file not found");
             if (de.getFullName().equals(fname))
             {
@@ -109,7 +109,7 @@ final class Directory
         for (int s = 0; s< DIRENTRYCOUNT; s++)
         {
             DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
-            if (de.nullEntry || de.deleted)
+            if (de.isNull() || de.isDeleted())
                 return s;
         }
         throw new RuntimeException("directory full");

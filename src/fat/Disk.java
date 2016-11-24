@@ -2,7 +2,6 @@ package fat;
 
 import bytearray.DynamicByteArray;
 import mappedfile.FastMemoryFile;
-import mappedfile.MemoryFile;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -151,7 +150,7 @@ public final class Disk
         Fat12 fat = new Fat12(_fmf);
         Directory directory = new Directory(_fmf);
         DirectoryEntry de = directory.seekFile(filename);
-        de.markAsDeleted();
+        de.setDeleted();
         directory.put(de, de.positionInDirectory);
         fat.deleteFile(de);
 
