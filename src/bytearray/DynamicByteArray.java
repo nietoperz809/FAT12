@@ -124,6 +124,11 @@ public class DynamicByteArray
         System.arraycopy (data, 0, theArray, address, data.length);
     }
 
+    /**
+     * Puts a single byte into ths dynBA
+     * @param address
+     * @param b
+     */
     public void put (int address, byte b)
     {
         byte b1[] = {b};
@@ -155,11 +160,14 @@ public class DynamicByteArray
         put (address, bytes);
     }
 
+    /**
+     * Clears the buffer but keeps size
+     */
     public void clear()
     {
         if (getCurrentSize() > 0)
         {
-            theArray = new byte[theArray.length];
+            Arrays.fill(theArray, (byte)0);
         }
     }
 
@@ -203,5 +211,25 @@ public class DynamicByteArray
             res[s] = new DynamicByteArray(get(s*fragment, sh.getRemainder()));
         }
         return res;
+    }
+
+    /**
+     * Write a string in this DynBA
+     * if string lenght is smaller than len, the rest is filled up with spaces
+     * @param address start address of string
+     * @param str the source string
+     * @param len number of characters used
+     */
+    public void setString (int address, String str, int len)
+    {
+        byte[] b = new byte[len];
+        for (int s=0; s<b.length; s++)
+        {
+            if (str.length() > s)
+                b[s] = (byte)str.charAt(s);
+            else
+                b[s] = ' ';
+        }
+        put (address, b);
     }
 }
