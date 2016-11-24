@@ -75,6 +75,11 @@ class FloppyMaster
             list = d.dir();
             System.out.println(list);
 
+            buff = "hello world".getBytes();
+            d.putFile("peter", "txt", buff);
+            list = d.dir();
+            System.out.println(list);
+
             d.saveTo("c:\\manipulated.img");
         }
         catch (Exception e)

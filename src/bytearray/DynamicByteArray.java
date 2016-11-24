@@ -22,6 +22,10 @@ public class DynamicByteArray
     {
     }
 
+    /**
+     * Construtor that takes a byte array
+     * @param dat
+     */
     public DynamicByteArray (byte[] dat)
     {
         theArray = dat;
@@ -187,22 +191,16 @@ public class DynamicByteArray
      */
     public DynamicByteArray[] split (int fragment)
     {
-        int parts = getCurrentSize()/fragment;
-        int remain = getCurrentSize()%fragment;
-        int total = parts + (remain !=0 ? 1 : 0);
-        DynamicByteArray[] res = new DynamicByteArray[total];
-        int s = 0;
-        for (; s<parts; s++)
+        SplitHelper sh = new SplitHelper(getCurrentSize(), fragment);
+        DynamicByteArray[] res = new DynamicByteArray[sh.getTotalblocks()];
+        int s;
+        for (s=0; s<sh.getBlocks(); s++)
         {
-            res[s] = new DynamicByteArray();
-            byte[] arr = this.get(s*fragment, fragment);
-            res[s].put(0, arr);
+            res[s] = new DynamicByteArray(get(s*fragment, fragment));
         }
-        if (remain != 0)
+        if (sh.getRemainder() != 0)
         {
-            res[s] = new DynamicByteArray();
-            byte[] arr = this.get(s*fragment, remain);
-            res[s].put(0, arr);
+            res[s] = new DynamicByteArray(get(s*fragment, sh.getRemainder()));
         }
         return res;
     }

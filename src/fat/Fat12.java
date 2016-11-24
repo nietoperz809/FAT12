@@ -1,6 +1,7 @@
 package fat;
 
 import bytearray.DynamicByteArray;
+import bytearray.SplitHelper;
 import mappedfile.FastMemoryFile;
 
 import java.util.ArrayList;
@@ -82,12 +83,9 @@ final class Fat12
 
     public void deleteFile (DirectoryEntry de) throws Exception
     {
-        int blocks = (int)de.getFileSize() / Fat12.CLUSTERSIZE;
-        int remainder = (int)de.getFileSize() % Fat12.CLUSTERSIZE;
-        int total = blocks + (remainder !=0 ? 1: 0);
-
+        SplitHelper sh = new SplitHelper(de.getFileSize(), Fat12.CLUSTERSIZE);
         int cluster = de.getFirstCluster();
-        for (int s=0; s<total; s++)
+        for (int s=0; s<sh.getTotalblocks(); s++)
         {
             int next = Fat12Entry.getFatEntryValue(_fat, cluster);
             Fat12Entry.writeFatEntryValue(_fat, cluster, 0);

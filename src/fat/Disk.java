@@ -1,6 +1,7 @@
 package fat;
 
 import bytearray.DynamicByteArray;
+import bytearray.SplitHelper;
 import mappedfile.FastMemoryFile;
 
 import java.security.SecureRandom;
@@ -98,10 +99,8 @@ public final class Disk
         Directory directory = new Directory(_fmf);
         int freedir = directory.getFreeDirectoryEntryOffset();
 
-        int blocks = data.length / Fat12.CLUSTERSIZE;
-        int remainder = data.length % Fat12.CLUSTERSIZE;
-        int totalblocks = blocks + (remainder !=0 ? 1 : 0);
-        ArrayList<Integer> freeList = fat.getFreeEntryList(totalblocks);
+        SplitHelper sh = new SplitHelper(data.length, Fat12.CLUSTERSIZE);
+        ArrayList<Integer> freeList = fat.getFreeEntryList(sh.getTotalblocks());
         DynamicByteArray splits[] = new DynamicByteArray(data).split(Fat12.CLUSTERSIZE);
         DirectoryEntry de = DirectoryEntry.create(filename,
                 ext,
@@ -111,7 +110,7 @@ public final class Disk
 
         directory.put (de, freedir);
 
-        for (int i=0; i<totalblocks; i++)
+        for (int i=0; i<sh.getTotalblocks(); i++)
         {
             int sector = freeList.get(i);
             int nextsector;
