@@ -10,10 +10,10 @@ Currently working:
 - Delete files in master dir
 - Generate disk images with various boot blocks
 - Set Volume Label
+- accurate Time/Date stamps on files
 
 Currently not implemented:
 - Subdirectories
-- Time/Date of files
 - All other stuff that is not listed in the above section
 
 License:
