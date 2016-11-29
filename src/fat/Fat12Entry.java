@@ -12,6 +12,20 @@ package fat;
  */
 public final class Fat12Entry
 {
+    public static final int FREE_SLOT = 0;
+    public static final int LAST_SLOT = 0x0fff;
+
+    private byte[] fat;
+
+    public Fat12Entry (Fat12 f)
+    {
+        this.fat = f.getArray();
+    }
+
+    public Fat12Entry (byte[] f)
+    {
+        this.fat = f;
+    }
 
     /**
      * Reads upper 4 bits of 12 bit value
@@ -68,11 +82,10 @@ public final class Fat12Entry
 
     /**
      * Reads compressed FAT12 entry
-     * @param fat the FAT
      * @param index entry index
      * @return the 12 bit value
      */
-    public static int getFatEntryValue (byte[] fat, int index)
+    public int getFatEntryValue (int index)
     {
         int loc = (3 * index) / 2;
         if ((index % 2) == 0)   // even
@@ -90,11 +103,10 @@ public final class Fat12Entry
 
     /**
      * Writes compressed FAT12 value
-     * @param fat The FAT
      * @param index index of FAT entry
      * @param val The 12 bit value
      */
-    public static void writeFatEntryValue (byte[] fat, int index, int val)
+    public void setFatEntryValue (int index, int val)
     {
         int loc = (3 * index) / 2;
         if ((index % 2) == 0)   // even

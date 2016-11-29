@@ -66,19 +66,34 @@ class FloppyMaster
 
             d.format("halloweltdubistcool");
 
-            byte[] buff = new byte[123456];
+            byte[] buff;
+            buff = new byte[1024];
             d.putFile("wixx", "x", buff);
-            String list = d.dir();
-            System.out.println(list);
-
-            d.deleteFile("wixx.x");
-            list = d.dir();
-            System.out.println(list);
+//            String list = d.dir();
+//            System.out.println(list);
+//
+//            d.deleteFile("wixx.x");
+//            list = d.dir();
+//            System.out.println(list);
 
             buff = "hello world".getBytes();
             d.putFile("peter", "txt", buff);
-            list = d.dir();
-            System.out.println(list);
+            d.putFile("peter2", "txt", buff);
+            d.putFile("peter3", "txt", buff);
+
+            buff = new byte[2049];
+            d.putFile("peter4", "txt", buff);
+
+            buff = new byte[1];
+            d.putFile("peter5", "txt", buff);
+
+            d.createSubDir("sexy", "doof");
+
+            //d.createSubDir("sub1", "lala");
+
+//            list = d.dir();
+//            System.out.println(list);
+
 
             d.saveTo("c:\\manipulated.img");
         }

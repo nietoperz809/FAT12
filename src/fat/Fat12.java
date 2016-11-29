@@ -13,6 +13,7 @@ final class Fat12
 {
     private final byte[] _fat;
     private final FastMemoryFile _fmf;
+    private final Fat12Entry _fatEntry;
 
     /**
      * Last entry on 1.44 mb disk
@@ -26,6 +27,8 @@ final class Fat12
     {
         _fmf = fmf;
         _fat = DiskRW.readFAT1 (fmf);
+        DiskRW.printSectorBytes40(fmf, 1);
+        _fatEntry = new Fat12Entry(this);
     }
 
     public byte[] getArray()
@@ -33,18 +36,28 @@ final class Fat12
         return _fat;
     }
 
+    int getFatEntryValue (int idx)
+    {
+        return _fatEntry.getFatEntryValue(idx);
+    }
+
+    void setFatEntryValue (int idx, int v)
+    {
+        _fatEntry.setFatEntryValue(idx, v);
+    }
+
     public void writeBack() throws Exception
     {
         DiskRW.writeFAT1(_fmf, _fat);
+        DiskRW.printSectorBytes40(_fmf, 1);
     }
-
 
     public ArrayList<Integer> getFreeEntryList (int needed)
     {
         ArrayList<Integer> list = new ArrayList<>();
         for (int s=2; s<=MAXENTRY_1440KB; s++)
         {
-            if (Fat12Entry.getFatEntryValue(_fat, s) == 0)
+            if (getFatEntryValue(s) == Fat12Entry.FREE_SLOT)
                 list.add(s);
             if (list.size() == needed)
                 return list;
@@ -71,7 +84,7 @@ final class Fat12
         {
             bytes = DiskRW.readSector(_fmf, cluster+DATAOFFSET);
             out.append(bytes);
-            cluster = Fat12Entry.getFatEntryValue(_fat, cluster);
+            cluster = getFatEntryValue(cluster);
         }
         if (remainder != 0)
         {
@@ -87,8 +100,8 @@ final class Fat12
         int cluster = de.getFirstCluster();
         for (int s=0; s<sh.getTotalblocks(); s++)
         {
-            int next = Fat12Entry.getFatEntryValue(_fat, cluster);
-            Fat12Entry.writeFatEntryValue(_fat, cluster, 0);
+            int next = getFatEntryValue(cluster);
+            setFatEntryValue(cluster, 0);
             cluster = next;
         }
     }

@@ -6,12 +6,15 @@ import mappedfile.FastMemoryFile;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Administrator on 11/21/2016.
  */
 public final class Disk
 {
+    public final static boolean DEBUG = true;
+
     private FastMemoryFile _fmf;
 
     private static final byte[] fatInitBytes = {(byte) 0xf0, (byte) 0xff, (byte) 0xff};
@@ -65,6 +68,13 @@ public final class Disk
         _fmf.setName(name);
     }
 
+    public static Disk getDosFormatted(String name) throws Exception
+    {
+        Disk d = new Disk();
+        d.format(name);
+        return d;
+    }
+
     /**
      * Set volume label of disk
      * @param label the label text
@@ -86,6 +96,20 @@ public final class Disk
         directory.writeBack ();
     }
 
+    public void createSubDir (String name, String ext) throws Exception
+    {
+        Fat12 fat = new Fat12(_fmf);
+        ArrayList<Integer> freeList = fat.getFreeEntryList(1);
+        Directory directory = new Directory(_fmf);
+        int freedir = directory.getFreeDirectoryEntryOffset();
+        DirectoryEntry de = DirectoryEntry.createSubdirEntry(name, ext, freedir);
+        fat.setFatEntryValue (freeList.get(0), Fat12Entry.LAST_SLOT); // only one sector
+        directory.put (de, freedir);
+
+        directory.writeBack ();
+        fat.writeBack();
+    }
+
     /**
      * Put a new File on disk
      * @param filename File name
@@ -101,7 +125,15 @@ public final class Disk
 
         SplitHelper sh = new SplitHelper(data.length, Fat12.CLUSTERSIZE);
         ArrayList<Integer> freeList = fat.getFreeEntryList(sh.getTotalblocks());
+
+        if (DEBUG)
+            System.out.println("freelist: "+Arrays.toString(freeList.toArray()));
+
         DynamicByteArray splits[] = new DynamicByteArray(data).split(Fat12.CLUSTERSIZE);
+
+        if (DEBUG)
+            System.out.println("splits: "+splits.length);
+
         DirectoryEntry de = DirectoryEntry.create(filename,
                 ext,
                 data.length,
@@ -114,16 +146,21 @@ public final class Disk
         {
             int sector = freeList.get(i);
             int nextsector;
-            if (freeList.size() == i+1)
+            if (i == (sh.getTotalblocks()-1))
             {
-                nextsector = 0x0fff;
+                nextsector = Fat12Entry.LAST_SLOT;
             }
             else
             {
                 nextsector = freeList.get(i + 1);
             }
             DiskRW.writeSectors(_fmf, sector+Fat12.DATAOFFSET, splits[i].getArray());
-            Fat12Entry.writeFatEntryValue (fat.getArray(), sector, nextsector);
+
+            fat.setFatEntryValue (sector, nextsector);
+            if (DEBUG)
+            {
+                System.out.println("FAT-setentry: "+ sector+" Value: "+ nextsector);
+            }
         }
 
         directory.writeBack ();

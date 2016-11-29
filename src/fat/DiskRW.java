@@ -2,6 +2,7 @@ package fat;
 
 import mappedfile.FastMemoryFile;
 
+
 /**
  * R/W functions
  */
@@ -55,5 +56,12 @@ class DiskRW
     public static byte[] readSectors (FastMemoryFile fm, int sectorNumber, int num) throws Exception
     {
         return fm.read(sectorNumber*Fat12.SECTORSIZE, Fat12.SECTORSIZE*num);
+    }
+
+    public static void printSectorBytes40 (FastMemoryFile fm, int sectnum) throws Exception
+    {
+        byte[] b = readPartialSector(fm, sectnum, 40);
+        if (Disk.DEBUG)
+            System.out.println(javax.xml.bind.DatatypeConverter.printHexBinary(b));
     }
 }
