@@ -214,4 +214,22 @@ public class DynamicByteArrayTest
         System.out.println(sp2[10]);
         System.out.println(sp3[10]);
     }
+
+    @Test
+    public void test_strWrite() throws Exception
+    {
+        byte[] b = new byte[23];
+        for (int s=0; s<23; s++ )
+            b[s] = (byte)6;
+        byte[] result = {104, 97, 108, 6, 6, 104, 6, 6, 104, 97, 108, 108, 111, 32, 32, 32, 32, 32,
+                6, 6, 6, 6, 6, 0, 104, 97, 108, 108, 111, 32};
+        DynamicByteArray arr = new DynamicByteArray(b);
+        arr.setString(0, "hallo", 3);
+        arr.setString(5, "hallo", 1);
+        arr.setString(8, "hallo", 10);
+        arr.setString(24, "hallo", 6);
+        System.out.println(Arrays.toString(arr.getArray()));
+        Assert.assertArrayEquals(arr.getArray(), result);
+    }
+
 }
