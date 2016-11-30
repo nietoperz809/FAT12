@@ -2,8 +2,6 @@ package fat;
 
 import misc.ByteCVT;
 
-import java.time.LocalDateTime;
-
 /**
  * Created by Administrator on 11/20/2016.
  */
@@ -86,8 +84,8 @@ public class DirectoryEntry
                                          int firstCluster,
                                          int attributes)
     {
-        int ts = getCurrentTimeStamp();
-        int ds = getCurrentDateStmp();
+        int ts = Timestamp.getCurrentTimeStamp();
+        int ds = Timestamp.getCurrentDateStamp();
         DirectoryEntry d = new DirectoryEntry();
         d.setFileName(name);
         d.setExtension(ext);
@@ -105,54 +103,6 @@ public class DirectoryEntry
     public static DirectoryEntry createSubdirEntry (String name, String ext, int cluster)
     {
         return create(name, ext, 0, cluster, (byte) SUBDIRECTORY);
-    }
-
-    /**
-     * Make FAT time stamp
-     * @param sec seconds 0...59
-     * @param min minutes 0...59
-     * @param hour hours 0...23
-     * @return Packed time stamp
-     */
-    public static int getTimeStamp (int sec, int min, int hour)
-    {
-        int a = (sec/2) & 31;
-        int b = (min & 63) << 5;
-        int c = (hour & 31) << 11;
-        return (a | b | c) & 0xffff;
-    }
-
-    public static int getCurrentTimeStamp()
-    {
-        LocalDateTime now = LocalDateTime.now();
-        int hour = now.getHour();
-        int minute = now.getMinute();
-        int second = now.getSecond();
-        return getTimeStamp(second, minute, hour);
-    }
-
-    /**
-     * Makes FAT date stamp
-     * @param day day 1...31
-     * @param month month 1...12
-     * @param year year 1980...2107
-     * @return
-     */
-    public static int getDateStamp (int day, int month, int year)
-    {
-        int a = (day) & 31;
-        int b = (month & 15) << 5;
-        int c = ((year-1980) & 127) << 9;
-        return (a | b | c) & 0xffff;
-    }
-
-    public static int getCurrentDateStmp()
-    {
-        LocalDateTime now = LocalDateTime.now();
-        int year = now.getYear();
-        int month = now.getMonthValue();
-        int day = now.getDayOfMonth();
-        return getDateStamp(day, month, year);
     }
 
     /**
