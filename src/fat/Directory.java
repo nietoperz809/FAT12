@@ -17,15 +17,6 @@ final class Directory
     FastMemoryFile parentFMF;
 
     /**
-     * Number of Dir Entries
-     */
-    public final static int DIRENTRYCOUNT = 224;
-    /**
-     * Byte size of single Dir entry
-     */
-    public final static int DIRENTRYSIZE = 32;
-
-    /**
      * Constructor
      * @param fmf FMF containing disk file
      * @throws Exception
@@ -59,7 +50,7 @@ final class Directory
         StringBuilder sb = new StringBuilder();
         for (int s=0; ; s++)
         {
-            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
+            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * Globals.DIRENTRYSIZE);
             if (de.isNull())
                 break;
             sb.append(de.toString()).append('\n');
@@ -77,7 +68,7 @@ final class Directory
         fname = fname.toUpperCase();
         for (int s=0; ; s++)
         {
-            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
+            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * Globals.DIRENTRYSIZE);
             if (de.isNull())
                 throw new RuntimeException("file not found");
             if (de.getFullName().equals(fname))
@@ -95,9 +86,9 @@ final class Directory
      */
     public void put (DirectoryEntry de, int index)
     {
-        int offset = DirectoryEntry.DIRENTRYSIZE * index;
+        int offset = Globals.DIRENTRYSIZE * index;
         byte[] dat = de.asArray();
-        System.arraycopy(dat,0, directoryBytes,offset, DirectoryEntry.DIRENTRYSIZE);
+        System.arraycopy(dat,0, directoryBytes,offset, Globals.DIRENTRYSIZE);
     }
 
     /**
@@ -106,9 +97,9 @@ final class Directory
      */
     public int getFreeDirectoryEntryOffset ()
     {
-        for (int s = 0; s< DIRENTRYCOUNT; s++)
+        for (int s = 0; s< Globals.DIRENTRYCOUNT; s++)
         {
-            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * DIRENTRYSIZE);
+            DirectoryEntry de = new DirectoryEntry(directoryBytes, s * Globals.DIRENTRYSIZE);
             if (de.isNull() || de.isDeleted())
                 return s;
         }

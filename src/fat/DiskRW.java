@@ -40,22 +40,22 @@ class DiskRW
 
     public static void writeSectors (FastMemoryFile fm, int sectorNumber, byte data[]) throws Exception
     {
-        fm.write (sectorNumber*Fat12.SECTORSIZE, data);
+        fm.write (sectorNumber* Globals.SECTORSIZE, data);
     }
 
     public static byte[] readSector (FastMemoryFile fm, int sectorNumber) throws Exception
     {
-        return fm.read(sectorNumber*Fat12.SECTORSIZE, Fat12.SECTORSIZE);
+        return fm.read(sectorNumber* Globals.SECTORSIZE, Globals.SECTORSIZE);
     }
 
     public static byte[] readPartialSector (FastMemoryFile fm, int sectorNumber, int len) throws Exception
     {
-        return fm.read(sectorNumber*Fat12.SECTORSIZE, len);
+        return fm.read(sectorNumber* Globals.SECTORSIZE, len);
     }
 
     public static byte[] readSectors (FastMemoryFile fm, int sectorNumber, int num) throws Exception
     {
-        return fm.read(sectorNumber*Fat12.SECTORSIZE, Fat12.SECTORSIZE*num);
+        return fm.read(sectorNumber* Globals.SECTORSIZE, Globals.SECTORSIZE*num);
     }
 
     public static void printSectorBytes40 (FastMemoryFile fm, int sectnum) throws Exception

@@ -135,6 +135,56 @@ public class DynamicByteArray
         put (address, b1);
     }
 
+    public boolean getBit (int bitAddress)
+    {
+        int offset = bitAddress/8;
+        int bitnum = 1 << (bitAddress%8);
+        byte[] memByte = get (offset, 1);
+        return (memByte[0] & bitnum) == bitnum;
+    }
+
+    public void putBit (boolean b, int bitAddress)
+    {
+        int offset = bitAddress/8;
+        int bitnum = 1 << (bitAddress%8);
+        byte[] memByte = get (offset, 1);
+        if (b)
+            memByte[0] = (byte)(memByte[0] | bitnum);
+        else
+            memByte[0] = (byte)(memByte[0] & ~bitnum);
+        put (offset, memByte[0]);
+    }
+
+    /**
+     * Read a Byte of variable length max (2^32 bits)
+     * @param bitAddress Adress of first bit in Array
+     * @param length Byte length
+     * @return The Byte
+     */
+    public int getVByte (int bitAddress, int length)
+    {
+        int res = 0;
+        while (length > 0)
+        {
+            length--;
+            if (getBit(bitAddress))
+                res |= (1<<length);
+            bitAddress++;
+        }
+        return res;
+    }
+
+    public void putVByte (int bitAddress, int length, int data)
+    {
+        while (length > 0)
+        {
+            length--;
+            boolean bit = ((data & (1<<length)) != 0);
+            putBit(bit, bitAddress);
+            bitAddress++;
+        }
+    }
+
     /**
      * Inserts bytes at the end
      * @param data new data bytes

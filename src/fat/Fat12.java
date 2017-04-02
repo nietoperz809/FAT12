@@ -15,14 +15,6 @@ final class Fat12
     private final FastMemoryFile _fmf;
     private final Fat12Entry _fatEntry;
 
-    /**
-     * Last entry on 1.44 mb disk
-     */
-    public static final int MAXENTRY_1440KB = 2880;
-    public static final int CLUSTERSIZE = 512;
-    public static final int SECTORSIZE = 512;
-    public static final int DATAOFFSET = 31;
-
     public Fat12 (FastMemoryFile fmf) throws Exception
     {
         _fmf = fmf;
@@ -55,9 +47,9 @@ final class Fat12
     public ArrayList<Integer> getFreeEntryList (int needed)
     {
         ArrayList<Integer> list = new ArrayList<>();
-        for (int s=2; s<=MAXENTRY_1440KB; s++)
+        for (int s = 2; s<= Globals.MAXENTRY_1440KB; s++)
         {
-            if (getFatEntryValue(s) == Fat12Entry.FREE_SLOT)
+            if (getFatEntryValue(s) == Globals.FREE_SLOT)
                 list.add(s);
             if (list.size() == needed)
                 return list;
@@ -75,20 +67,20 @@ final class Fat12
     {
         DynamicByteArray out = new DynamicByteArray();
 
-        int blocks = (int)de.getFileSize() / Fat12.CLUSTERSIZE;
-        int remainder = (int)de.getFileSize() % Fat12.CLUSTERSIZE;
+        int blocks = (int)de.getFileSize() / Globals.CLUSTERSIZE;
+        int remainder = (int)de.getFileSize() % Globals.CLUSTERSIZE;
 
         int cluster = de.getFirstCluster();
         byte[] bytes;
         for (int s=0; s<blocks; s++)
         {
-            bytes = DiskRW.readSector(_fmf, cluster+DATAOFFSET);
+            bytes = DiskRW.readSector(_fmf, cluster+ Globals.DATAOFFSET);
             out.append(bytes);
             cluster = getFatEntryValue(cluster);
         }
         if (remainder != 0)
         {
-            bytes = DiskRW.readPartialSector(_fmf, cluster+DATAOFFSET, remainder);
+            bytes = DiskRW.readPartialSector(_fmf, cluster+ Globals.DATAOFFSET, remainder);
             out.append(bytes);
         }
         return out;
@@ -96,7 +88,7 @@ final class Fat12
 
     public void deleteFile (DirectoryEntry de) throws Exception
     {
-        SplitHelper sh = new SplitHelper(de.getFileSize(), Fat12.CLUSTERSIZE);
+        SplitHelper sh = new SplitHelper(de.getFileSize(), Globals.CLUSTERSIZE);
         int cluster = de.getFirstCluster();
         for (int s=0; s<sh.getTotalblocks(); s++)
         {

@@ -12,8 +12,6 @@ package fat;
  */
 public final class Fat12Entry
 {
-    public static final int FREE_SLOT = 0;
-    public static final int LAST_SLOT = 0x0fff;
 
     private byte[] fat;
 

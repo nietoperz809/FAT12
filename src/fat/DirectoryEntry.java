@@ -7,33 +7,6 @@ import misc.ByteCVT;
  */
 public class DirectoryEntry
 {
-//    public boolean deleted;
-//    public boolean nullEntry;
-//    private String fileName;
-//    private String extension;
-//    private int attributes;
-//    private int creationTime;
-//    private int creationDate;
-//    private int lastAccessData;
-//    private int lastWriteTime;
-//    private int lastWriteDate;
-//    public int firstLogicalCluster;
-//    public long fileSize;
-
-    /**
-     * Number of bytes of single dir entry
-     */
-    public static final int DIRENTRYSIZE = 32;
-    /**
-     * Attribute bits
-     */
-    public static final int READONLY = 0x01;
-    public static final int HIDDEN = 0x02;
-    public static final int SYSTEM = 0x04;
-    public static final int VOLUMELABEL = 0x08;
-    public static final int SUBDIRECTORY = 0x10;
-    public static final int ARCHIVE = 0x20;
-    public static final byte DELETED = (byte) 0xe5;
     public int positionInDirectory; // Internal use
     private byte[] RawData = null;
     /**
@@ -41,7 +14,7 @@ public class DirectoryEntry
      */
     private DirectoryEntry ()
     {
-        RawData = new byte[DIRENTRYSIZE];
+        RawData = new byte[Globals.DIRENTRYSIZE];
     }
     /**
      * Constructor from bigger array that contains a Directory Entry
@@ -51,8 +24,8 @@ public class DirectoryEntry
      */
     public DirectoryEntry (byte[] array, int offset)
     {
-        RawData = new byte[DIRENTRYSIZE];
-        System.arraycopy(array, offset, RawData, 0, DIRENTRYSIZE);
+        RawData = new byte[Globals.DIRENTRYSIZE];
+        System.arraycopy(array, offset, RawData, 0, Globals.DIRENTRYSIZE);
     }
 
     /**
@@ -67,7 +40,7 @@ public class DirectoryEntry
         {
             lab = lab + ' ';
         }
-        return create(lab.substring(0, 8), lab.substring(8, 11), 0, 0, (byte) VOLUMELABEL);
+        return create(lab.substring(0, 8), lab.substring(8, 11), 0, 0, (byte) Globals.VOLUMELABEL);
     }
 
     /**
@@ -102,7 +75,7 @@ public class DirectoryEntry
 
     public static DirectoryEntry createSubdirEntry (String name, String ext, int cluster)
     {
-        return create(name, ext, 0, cluster, (byte) SUBDIRECTORY);
+        return create(name, ext, 0, cluster, (byte) Globals.SUBDIRECTORY);
     }
 
     /**
@@ -117,7 +90,7 @@ public class DirectoryEntry
 
     public void setDeleted ()
     {
-        RawData[0] = DELETED;
+        RawData[0] = Globals.DELETED;
     }
 
     public boolean isNull ()
@@ -203,7 +176,7 @@ public class DirectoryEntry
 
     public boolean isDeleted ()
     {
-        return (RawData[0] == DELETED);
+        return (RawData[0] == Globals.DELETED);
     }
 
     public int getFirstCluster ()

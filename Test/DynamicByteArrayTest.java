@@ -3,7 +3,6 @@
 import bytearray.DynamicByteArray;
 import bytearray.UndoableDynamicByteArray;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -230,6 +229,36 @@ public class DynamicByteArrayTest
         arr.setString(24, "hallo", 6);
         System.out.println(Arrays.toString(arr.getArray()));
         Assert.assertArrayEquals(arr.getArray(), result);
+    }
+
+    @Test
+    public void BitSetGetTest()
+    {
+        DynamicByteArray a = new DynamicByteArray();
+        a.putBit (true, 13);
+        a.putBit (true, 15);
+        a.putBit (true, 17);
+        a.putBit (true, 19);
+        a.putBit (true, 21);
+        a.putBit (true, 23);
+        for (int s = 11; s < 26; s++)
+        {
+            System.out.print(a.getBit(s)+"|");  // false|false|true|false|true|false|true|false|true|false|true|false|true|false|false|
+        }
+        byte[] arr = a.getArray();
+        Assert.assertArrayEquals(new byte[]{0, -96,-86, 0}, arr);
+    }
+
+    @Test
+    public void vByteTest()
+    {
+        DynamicByteArray a = new DynamicByteArray();
+        a.putVByte(123, 3, 7);
+        int vb = a.getVByte(123, 3);
+        Assert.assertEquals(7, vb);
+        a.putVByte(999, 3, 8);
+        vb = a.getVByte(999, 3);
+        Assert.assertEquals(0, vb);
     }
 
 }

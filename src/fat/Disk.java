@@ -103,7 +103,7 @@ public final class Disk
         Directory directory = new Directory(_fmf);
         int freedir = directory.getFreeDirectoryEntryOffset();
         DirectoryEntry de = DirectoryEntry.createSubdirEntry(name, ext, freedir);
-        fat.setFatEntryValue (freeList.get(0), Fat12Entry.LAST_SLOT); // only one sector
+        fat.setFatEntryValue (freeList.get(0), Globals.LAST_SLOT); // only one sector
         directory.put (de, freedir);
 
         directory.writeBack ();
@@ -123,13 +123,13 @@ public final class Disk
         Directory directory = new Directory(_fmf);
         int freedir = directory.getFreeDirectoryEntryOffset();
 
-        SplitHelper sh = new SplitHelper(data.length, Fat12.CLUSTERSIZE);
+        SplitHelper sh = new SplitHelper(data.length, Globals.CLUSTERSIZE);
         ArrayList<Integer> freeList = fat.getFreeEntryList(sh.getTotalblocks());
 
         if (DEBUG)
             System.out.println("freelist: "+Arrays.toString(freeList.toArray()));
 
-        DynamicByteArray splits[] = new DynamicByteArray(data).split(Fat12.CLUSTERSIZE);
+        DynamicByteArray splits[] = new DynamicByteArray(data).split(Globals.CLUSTERSIZE);
 
         if (DEBUG)
             System.out.println("splits: "+splits.length);
@@ -138,7 +138,7 @@ public final class Disk
                 ext,
                 data.length,
                 freeList.get(0),
-                DirectoryEntry.ARCHIVE);
+                Globals.ARCHIVE);
 
         directory.put (de, freedir);
 
@@ -148,13 +148,13 @@ public final class Disk
             int nextsector;
             if (i == (sh.getTotalblocks()-1))
             {
-                nextsector = Fat12Entry.LAST_SLOT;
+                nextsector = Globals.LAST_SLOT;
             }
             else
             {
                 nextsector = freeList.get(i + 1);
             }
-            DiskRW.writeSectors(_fmf, sector+Fat12.DATAOFFSET, splits[i].getArray());
+            DiskRW.writeSectors(_fmf, sector+ Globals.DATAOFFSET, splits[i].getArray());
 
             fat.setFatEntryValue (sector, nextsector);
             if (DEBUG)
@@ -213,7 +213,7 @@ public final class Disk
     public void format(String label) throws Exception
     {
         _fmf.clearAll();
-        _fmf.write(0, BootBlock.dos622BootSector);
+        _fmf.write(0, Globals.dos622BootSector);
         _fmf.write(0x27, getFourRandomBytes());  // serial number
         _fmf.write(0x200, fatInitBytes);        // fat 1
         _fmf.write(0x1400, fatInitBytes);       // fat 2

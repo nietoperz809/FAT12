@@ -1,5 +1,5 @@
-import fat.DirectoryEntry;
 import fat.Disk;
+import fat.Timestamp;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,11 +27,11 @@ public class TestDisk
     @Test
     public void testTime()
     {
-        int ret = DirectoryEntry.getTimeStamp(0xffffffff, 0, 0);
+        int ret = Timestamp.getTimeStamp(0xffffffff, 0, 0);
         Assert.assertEquals(ret, 31);
-        ret = DirectoryEntry.getTimeStamp(0, 0xffffffff, 0);
+        ret = Timestamp.getTimeStamp(0, 0xffffffff, 0);
         Assert.assertEquals(ret, 2016);
-        ret = DirectoryEntry.getTimeStamp(0, 0, 0xffffffff);
+        ret = Timestamp.getTimeStamp(0, 0, 0xffffffff);
         Assert.assertEquals(ret, 63488);
     }
 }
