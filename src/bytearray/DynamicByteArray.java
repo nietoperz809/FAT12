@@ -118,22 +118,22 @@ public class DynamicByteArray
      * @param address first address to be written to
      * @param data data to be written
      */
-    public void put (int address, byte[] data)
+    public void put (int address, byte... data)
     {
         realloc (address + data.length);
         System.arraycopy (data, 0, theArray, address, data.length);
     }
 
-    /**
-     * Puts a single byte into ths dynBA
-     * @param address
-     * @param b
-     */
-    public void put (int address, byte b)
-    {
-        byte b1[] = {b};
-        put (address, b1);
-    }
+//    /**
+//     * Puts a single byte into ths dynBA
+//     * @param address where to put
+//     * @param b the byte
+//     */
+//    public void put (int address, byte b)
+//    {
+//        byte b1[] = {b};
+//        put (address, b);
+//    }
 
     public boolean getBit (int bitAddress)
     {
@@ -156,7 +156,7 @@ public class DynamicByteArray
     }
 
     /**
-     * Read a Byte of variable length max (2^32 bits)
+     * Read a Byte of variable length max 32 bits
      * @param bitAddress Adress of first bit in Array
      * @param length Byte length
      * @return The Byte
