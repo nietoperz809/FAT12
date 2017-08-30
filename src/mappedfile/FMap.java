@@ -6,7 +6,7 @@
 package mappedfile;
 
 import java.nio.ByteBuffer;
-import rangetest.Range;
+import range.Range;
 
 /**
  *

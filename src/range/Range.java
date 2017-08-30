@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package rangetest;
+package range;
 
 /**
  *
@@ -13,7 +13,7 @@ public class Range
 {
     public long from;
     public long to;
-    public Object host;
+    public Object host = null;
     
     /**
      * Builds a range
@@ -100,7 +100,8 @@ public class Range
      */
     public Range combine (Range other) throws Exception
     {
-        return new Range (Math.min(this.from, other.from), Math.max(this.to, other.to), this.host);
+        return new Range (Math.min(this.from, other.from),
+                Math.max(this.to, other.to), this.host);
     }
 
     /**
@@ -147,8 +148,8 @@ public class Range
     @Override
     public String toString()
     {
-        String b = "(" + this.from +
-                '/' +
+        String b = "Range(" + this.from +
+                ':' +
                 this.to + ')';
         return b;
     }

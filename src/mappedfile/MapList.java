@@ -7,8 +7,8 @@ package mappedfile;
 
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
-import rangetest.AccumulatedRangeList;
-import rangetest.Range;
+import range.AccumulatedRangeList;
+import range.Range;
 
 /**
  *

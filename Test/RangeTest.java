@@ -1,6 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
-import rangetest.Range;
+import range.Range;
 
 /**
  * Created by Administrator on 10/30/2016.
