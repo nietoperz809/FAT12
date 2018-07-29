@@ -13,10 +13,10 @@ public class TestDisk
     {
         Disk d = Disk.getDosFormatted("MyDisk");
 
-        byte[] buff = new String ("hello").getBytes();
+        byte[] buff = "hello".getBytes();
         d.putFile("wixx", "x", buff);
 
-        buff = new String ("doof").getBytes();
+        buff = "doof".getBytes();
         d.putFile("wixx2", "x", buff);
 
         buff = new byte[513];
@@ -27,11 +27,11 @@ public class TestDisk
     @Test
     public void testTime()
     {
-        int ret = Timestamp.getTimeStamp(0xffffffff, 0, 0);
-        Assert.assertEquals(ret, 31);
-        ret = Timestamp.getTimeStamp(0, 0xffffffff, 0);
+        int ret = Timestamp.getTimeStamp(0xffff, 0, 0);
+        Assert.assertEquals(31, ret);
+        ret = Timestamp.getTimeStamp(0, 0xffff, 0);
         Assert.assertEquals(ret, 2016);
-        ret = Timestamp.getTimeStamp(0, 0, 0xffffffff);
+        ret = Timestamp.getTimeStamp(0, 0, 0xffff);
         Assert.assertEquals(ret, 63488);
     }
 }

@@ -21,7 +21,7 @@ public class Range
      * @param to End
      * @throws Exception end lesser than start or start is negative  
      */
-    public Range(long from, long to, Object host) throws Exception
+    public Range(long from, long to) throws Exception
     {
         if (to < from)
             throw new Exception ("to < from");
@@ -29,6 +29,17 @@ public class Range
             throw new Exception ("negative");
         this.from = from;
         this.to = to;
+    }
+
+    /**
+     * Builds a range
+     * @param from Start
+     * @param to End
+     * @throws Exception end lesser than start or start is negative
+     */
+    public Range(long from, long to, Object host) throws Exception
+    {
+        this (from, to);
         this.host = host;
     }
 

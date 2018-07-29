@@ -1,5 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
+import range.AccumulatedRangeList;
 import range.Range;
 
 /**
@@ -23,4 +24,16 @@ public class RangeTest
         Assert.assertTrue (r4.equals(rc));
         Assert.assertTrue (r5.equals(rc));
     }
+
+    @Test
+    public void testAccList() throws Exception
+    {
+        AccumulatedRangeList acl = new AccumulatedRangeList();
+        System.out.println(acl.toString());
+        acl.add(new Range(1,5));
+        System.out.println(acl.toString());
+        acl.add(new Range(1,6));
+        System.out.println(acl.toString());
+    }
+
 }

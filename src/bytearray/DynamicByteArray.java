@@ -6,6 +6,8 @@
 package bytearray;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Byte array that can grow
@@ -57,7 +59,7 @@ public class DynamicByteArray
     }
 
     /**
-     * Resizes the array to a new length
+     * Resizes the array to a new length if it is too short
      * @param len new length
      */
     public void realloc(int len)
@@ -235,6 +237,23 @@ public class DynamicByteArray
         return res;
     }
 
+    public void reverse (int address, int len)
+    {
+        byte[] part = get(address, len);
+        int i = 0;
+        int j = part.length - 1;
+        byte tmp;
+        while (j > i)
+        {
+            tmp = part[j];
+            part[j] = part[i];
+            part[i] = tmp;
+            j--;
+            i++;
+        }
+        put(address, part);
+    }
+
     @Override
     public String toString()
     {
@@ -266,7 +285,7 @@ public class DynamicByteArray
     /**
      * Write a string in this DynBA
      * if string lenght is smaller than len, the rest is filled up with spaces
-     * @param address start address of string
+     * @param address start address of string in BA
      * @param str the source string
      * @param len number of characters used
      */
@@ -282,4 +301,15 @@ public class DynamicByteArray
         }
         put (address, b);
     }
+
+    /**
+     * Write a string in this DynBA
+     * @param address start address of string in BA
+     * @param str the source string
+     */
+    public void setString (int address, String str)
+    {
+        put (address, str.getBytes());
+    }
+
 }

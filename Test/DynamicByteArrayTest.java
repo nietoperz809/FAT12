@@ -13,6 +13,18 @@ import java.util.Arrays;
 public class DynamicByteArrayTest
 {
     @Test
+    public void test_REVERSE()
+    {
+        byte[] a = "0123456789".getBytes();
+        DynamicByteArray ba = new DynamicByteArray();
+        ba.put(0, a);
+        ba.reverse(1,4);
+        byte[] c = ba.get(0, a.length);
+        Assert.assertArrayEquals(c, "0432156789".getBytes());
+    }
+
+
+    @Test
     public void test_DELETE()
     {
         byte[] a = "0123456789".getBytes();
