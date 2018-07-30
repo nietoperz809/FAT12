@@ -15,7 +15,7 @@ public final class Disk
 {
     public final static boolean DEBUG = true;
 
-    private FastMemoryFile _fmf;
+    private FastMemoryFile memoryFile;
 
     private static final byte[] fatInitBytes = {(byte) 0xf0, (byte) 0xff, (byte) 0xff};
     private static final int DISKSIZE = 1474560;
@@ -31,23 +31,21 @@ public final class Disk
      * Constructs a disk from file image
      * @param path path to file
      * @return a new Disk
-     * @throws Exception
      */
-    public static Disk load (String path) throws Exception
+    public static Disk load (String path)
     {
         Disk d = new Disk();
-        d._fmf.load(path);
+        d.memoryFile.load(path);
         return d;
     }
 
     /**
      * Saves Disk as image to file
      * @param path output file/path
-     * @throws Exception
      */
     public void saveTo (String path) throws Exception
     {
-        _fmf.saveCopyAs(path);
+        memoryFile.saveCopyAs(path);
     }
 
     /**
@@ -55,8 +53,8 @@ public final class Disk
      */
     private Disk()
     {
-        _fmf = new FastMemoryFile();
-        _fmf.setLength(DISKSIZE);
+        memoryFile = new FastMemoryFile();
+        memoryFile.setLength(DISKSIZE);
     }
 
     /**
@@ -65,7 +63,7 @@ public final class Disk
     public Disk (String name)
     {
         super();
-        _fmf.setName(name);
+        memoryFile.setName(name);
     }
 
     public static Disk getDosFormatted(String name) throws Exception
@@ -87,9 +85,9 @@ public final class Disk
             label = label+' ';
         if (label.length() > 11)
             label = label.substring (0, 11);
-        _fmf.write (0x2b, label.getBytes());   // write label in boot block
+        memoryFile.write (0x2b, label.getBytes());   // write label in boot block
 
-        Directory directory = new Directory(_fmf); // write label in directory
+        Directory directory = new Directory(memoryFile); // write label in directory
         int freedir = directory.getFreeDirectoryEntryOffset();
         DirectoryEntry de = DirectoryEntry.createVolumeLabel(label);
         directory.put (de, freedir);
@@ -98,9 +96,9 @@ public final class Disk
 
     public void createSubDir (String name, String ext) throws Exception
     {
-        Fat12 fat = new Fat12(_fmf);
+        Fat12 fat = new Fat12(memoryFile);
         ArrayList<Integer> freeList = fat.getFreeEntryList(1);
-        Directory directory = new Directory(_fmf);
+        Directory directory = new Directory(memoryFile);
         int freedir = directory.getFreeDirectoryEntryOffset();
         DirectoryEntry de = DirectoryEntry.createSubdirEntry(name, ext, freedir);
         fat.setFatEntryValue (freeList.get(0), Globals.LAST_SLOT); // only one sector
@@ -119,8 +117,8 @@ public final class Disk
      */
     public void putFile (String filename, String ext, byte[] data) throws Exception
     {
-        Fat12 fat = new Fat12(_fmf);
-        Directory directory = new Directory(_fmf);
+        Fat12 fat = new Fat12(memoryFile);
+        Directory directory = new Directory(memoryFile);
         int freedir = directory.getFreeDirectoryEntryOffset();
 
         SplitHelper sh = new SplitHelper(data.length, Globals.CLUSTERSIZE);
@@ -154,7 +152,7 @@ public final class Disk
             {
                 nextsector = freeList.get(i + 1);
             }
-            DiskRW.writeSectors(_fmf, sector+ Globals.DATAOFFSET, splits[i].getArray());
+            DiskRW.writeSectors(memoryFile, sector+ Globals.DATAOFFSET, splits[i].getArray());
 
             fat.setFatEntryValue (sector, nextsector);
             if (DEBUG)
@@ -175,16 +173,16 @@ public final class Disk
      */
     public DynamicByteArray getFileData (String filename) throws Exception
     {
-        Fat12 fat = new Fat12(_fmf);
-        Directory d = new Directory(_fmf);
+        Fat12 fat = new Fat12(memoryFile);
+        Directory d = new Directory(memoryFile);
         DirectoryEntry de = d.seekFile(filename);
         return fat.getFile(de);
     }
 
     public void deleteFile (String filename) throws Exception
     {
-        Fat12 fat = new Fat12(_fmf);
-        Directory directory = new Directory(_fmf);
+        Fat12 fat = new Fat12(memoryFile);
+        Directory directory = new Directory(memoryFile);
         DirectoryEntry de = directory.seekFile(filename);
         de.setDeleted();
         directory.put(de, de.positionInDirectory);
@@ -201,7 +199,7 @@ public final class Disk
      */
     public String dir() throws Exception
     {
-        Directory d = new Directory(_fmf);
+        Directory d = new Directory(memoryFile);
         return d.list();
     }
 
@@ -212,22 +210,22 @@ public final class Disk
      */
     public void format(String label) throws Exception
     {
-        _fmf.clearAll();
-        _fmf.write(0, Globals.dos622BootSector);
-        _fmf.write(0x27, getFourRandomBytes());  // serial number
-        _fmf.write(0x200, fatInitBytes);        // fat 1
-        _fmf.write(0x1400, fatInitBytes);       // fat 2
-        _fmf.fillArea(0x4200, (byte) 0xf6, 1457664);
+        memoryFile.clearAll();
+        memoryFile.write(0, Globals.dos622BootSector);
+        memoryFile.write(0x27, getFourRandomBytes());  // serial number
+        memoryFile.write(0x200, fatInitBytes);        // fat 1
+        memoryFile.write(0x1400, fatInitBytes);       // fat 2
+        memoryFile.fillArea(0x4200, (byte) 0xf6, 1457664);
         setVolumeLabel(label);
     }
 
 //    public void close() throws Exception
 //    {
-//        _fmf.close();
+//        memoryFile.close();
 //    }
 //
 //    MemoryFile getBootSector() throws Exception
 //    {
-//        return new FastMemoryFile("bootsect", _fmf, 0, Fat12.SECTORSIZE);
+//        return new FastMemoryFile("bootsect", memoryFile, 0, Fat12.SECTORSIZE);
 //    }
 }

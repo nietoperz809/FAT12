@@ -25,12 +25,12 @@ public class FastMemoryFile implements MemoryFile
      */
     public void load(String fname)
     {
-        _arr.setArray(fromFile(fname));
+        _arr.setArray(byteArrayFromFile(fname));
     }
 
     public void saveCopyAs(String fname) throws Exception
     {
-        toFile (fname,_arr.getArray() );
+        byteArrayToFile(fname,_arr.getArray() );
     }
 
     /**
@@ -75,7 +75,7 @@ public class FastMemoryFile implements MemoryFile
      * @param fname name of file
      * @return byte array filled with file content or null on error
      */
-    public static byte[] fromFile (String fname)
+    public static byte[] byteArrayFromFile (String fname)
     {
         try
         {
@@ -94,7 +94,7 @@ public class FastMemoryFile implements MemoryFile
      * @param in the byte array to be stored
      * @throws Exception if something goes wrong
      */
-    public static void toFile(String fname, byte[] in) throws Exception
+    public static void byteArrayToFile (String fname, byte[] in) throws Exception
     {
         if (in == null)
             return;
@@ -130,7 +130,7 @@ public class FastMemoryFile implements MemoryFile
     {
         if (filename == null)
             throw new RuntimeException("Nameless Object");
-        this.toFile(filename, _arr.getArray());
+        byteArrayToFile(filename, _arr.getArray());
     }
 
     @Override
