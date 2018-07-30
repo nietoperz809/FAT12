@@ -16,8 +16,7 @@ public class DynamicByteArrayTest
     public void test_REVERSE()
     {
         byte[] a = "0123456789".getBytes();
-        DynamicByteArray ba = new DynamicByteArray();
-        ba.put(0, a);
+        DynamicByteArray ba = new DynamicByteArray(a);
         ba.reverse(1,4);
         byte[] c = ba.get(0, a.length);
         Assert.assertArrayEquals(c, "0432156789".getBytes());
@@ -29,8 +28,7 @@ public class DynamicByteArrayTest
     {
         byte[] a = "0123456789".getBytes();
         byte[] r1 = "012789".getBytes();
-        DynamicByteArray ba = new DynamicByteArray();
-        ba.put(1000, a);
+        DynamicByteArray ba = new DynamicByteArray(1000,a);
         ba.delete(1003,4);
         byte[] b = ba.get(1000, r1.length);
         Assert.assertArrayEquals(b, r1);
@@ -42,8 +40,7 @@ public class DynamicByteArrayTest
         byte[] a = "0123456789".getBytes();
         byte[] r1 = "0123abcdef456789".getBytes();
         byte[] r2 = "hello".getBytes();
-        DynamicByteArray ba = new DynamicByteArray();
-        ba.put(1000, a);
+        DynamicByteArray ba = new DynamicByteArray(1000,a);
         ba.insert(1004, "abcdef".getBytes());
         byte[] b = ba.get(1000, r1.length);
         Assert.assertArrayEquals(b, r1);
@@ -73,8 +70,8 @@ public class DynamicByteArrayTest
     @Test
     public void test_Length() throws Exception
     {
-        DynamicByteArray arr = new DynamicByteArray();
         byte[] b1 = new byte[]{1,2,3,4};
+        DynamicByteArray arr = new DynamicByteArray(b1);
         arr.put(0, b1);
         Assert.assertEquals(arr.getCurrentSize(), b1.length);
         arr.put(100, b1);

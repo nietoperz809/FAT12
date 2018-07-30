@@ -6,8 +6,6 @@
 package bytearray;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Byte array that can grow
@@ -25,12 +23,23 @@ public class DynamicByteArray
     }
 
     /**
-     * Construtor that takes a byte array
+     * Construtor that take a byte array and first position of that array
+     * @param address first address to be written to
+     * @param data data to be written
+     */
+    public DynamicByteArray (int address, byte... data)
+    {
+        put (address, data);
+    }
+
+    /**
+     * Construtor that take a byte array
      * @param dat
      */
     public DynamicByteArray (byte[] dat)
     {
-        theArray = dat;
+        put (0, dat);
+        //theArray = dat;
     }
 
     /**
