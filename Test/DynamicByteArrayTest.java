@@ -22,6 +22,17 @@ public class DynamicByteArrayTest
         Assert.assertArrayEquals(c, "0432156789".getBytes());
     }
 
+    @Test
+    public void test_HASH()
+    {
+        DynamicByteArray ba = new DynamicByteArray("abcd".getBytes ());
+        DynamicByteArray bb = new DynamicByteArray("abcd".getBytes ());
+        DynamicByteArray bc = new DynamicByteArray("abXd".getBytes ());
+        Assert.assertEquals(ba.hashCode (), bb.hashCode ());
+        Assert.assertNotEquals(ba.hashCode (), bc.hashCode ());
+    }
+
+
 
     @Test
     public void test_DELETE()

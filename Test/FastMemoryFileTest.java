@@ -15,8 +15,7 @@ public class FastMemoryFileTest
     private static byte[] readBytes;
 
 
-    @Test
-    public void a0_open () throws Exception
+    private void open ()
     {
         memfile = new FastMemoryFile ("c:\\memfilexxx.txt");
         Assert.assertNotNull(memfile);
@@ -25,6 +24,7 @@ public class FastMemoryFileTest
     @Test
     public void a1_write () throws Exception
     {
+        open();
         memfile.write(0, testBytes);
     }
 

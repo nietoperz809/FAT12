@@ -22,6 +22,11 @@ public class DynamicByteArray
     {
     }
 
+    public int hashCode()
+    {
+        return Arrays.hashCode (theArray);
+    }
+
     /**
      * Construtor that take a byte array and first position of that array
      * @param address first address to be written to
