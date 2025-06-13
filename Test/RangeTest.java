@@ -21,8 +21,8 @@ public class RangeTest
 
         Assert.assertFalse (r1.overlap(r3));
         Assert.assertTrue (r1.overlap(r2));
-        Assert.assertTrue (r4.equals(rc));
-        Assert.assertTrue (r5.equals(rc));
+        Assert.assertEquals(r4, rc);
+        Assert.assertEquals(r5, rc);
     }
 
     @Test

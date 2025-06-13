@@ -22,7 +22,7 @@ public final class Disk
 
     private static byte[] getFourRandomBytes ()
     {
-        byte b[] = new byte[4];
+        byte[] b = new byte[4];
         new SecureRandom().nextBytes(b);
         return b;
     }
@@ -101,7 +101,7 @@ public final class Disk
         Directory directory = new Directory(memoryFile);
         int freedir = directory.getFreeDirectoryEntryOffset();
         DirectoryEntry de = DirectoryEntry.createSubdirEntry(name, ext, freedir);
-        fat.setFatEntryValue (freeList.get(0), Globals.LAST_SLOT); // only one sector
+        fat.setFatEntryValue (freeList.getFirst(), Globals.LAST_SLOT); // only one sector
         directory.put (de, freedir);
 
         directory.writeBack ();
@@ -135,7 +135,7 @@ public final class Disk
         DirectoryEntry de = DirectoryEntry.create(filename,
                 ext,
                 data.length,
-                freeList.get(0),
+                freeList.getFirst(),
                 Globals.ARCHIVE);
 
         directory.put (de, freedir);

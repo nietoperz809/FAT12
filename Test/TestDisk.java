@@ -30,7 +30,7 @@ public class TestDisk
         int ret = Timestamp.getTimeStamp(0xffff, 0, 0);
         Assert.assertEquals(31, ret);
         ret = Timestamp.getTimeStamp(0, 0xffff, 0);
-        Assert.assertEquals(ret, 2016);
+        Assert.assertEquals(2016, ret);
         ret = Timestamp.getTimeStamp(0, 0, 0xffff);
         Assert.assertEquals(ret, 63488);
     }

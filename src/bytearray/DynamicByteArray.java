@@ -11,20 +11,17 @@ import java.util.Arrays;
  * Byte array that can grow
  * @author Administrator
  */
-public class DynamicByteArray
-{
+public class DynamicByteArray {
     /**
      * This is the array
      */
     byte[] theArray = null;
 
-    public DynamicByteArray ()
-    {
+    public DynamicByteArray() {
     }
 
-    public int hashCode()
-    {
-        return Arrays.hashCode (theArray);
+    public int hashCode() {
+        return Arrays.hashCode(theArray);
     }
 
     /**
@@ -32,18 +29,16 @@ public class DynamicByteArray
      * @param address first address to be written to
      * @param data data to be written
      */
-    public DynamicByteArray (int address, byte... data)
-    {
-        put (address, data);
+    public DynamicByteArray(int address, byte... data) {
+        put(address, data);
     }
 
     /**
      * Construtor that take a byte array
      * @param dat
      */
-    public DynamicByteArray (byte[] dat)
-    {
-        put (0, dat);
+    public DynamicByteArray(byte[] dat) {
+        put(0, dat);
         //theArray = dat;
     }
 
@@ -51,22 +46,19 @@ public class DynamicByteArray
      * Set a new array
      * @param arr the array
      */
-    public void setArray (byte[] arr)
-    {
+    public void setArray(byte[] arr) {
         theArray = arr;
     }
 
     /**
      * Returns the array that is base of this object
-     * @return  the array itself
+     * @return the array itself
      */
-    public byte[] getArray()
-    {
+    public byte[] getArray() {
         return theArray;
     }
 
-    public int getCurrentSize()
-    {
+    public int getCurrentSize() {
         if (theArray == null)
             return 0;
         return theArray.length;
@@ -76,18 +68,14 @@ public class DynamicByteArray
      * Resizes the array to a new length if it is too short
      * @param len new length
      */
-    public void realloc(int len)
-    {
-        if (theArray == null)
-        {
+    public void realloc(int len) {
+        if (theArray == null) {
             theArray = new byte[len];
-        }
-        else if (len > theArray.length)
-        {
+        } else if (len > theArray.length) {
             theArray = Arrays.copyOf(theArray, len);
         }
     }
-    
+
     /**
      * Deletes part of array
      * delete (4,3) on [49, 50, 51, 52, 53, 54, 55, 56, 57, 48]
@@ -95,49 +83,43 @@ public class DynamicByteArray
      * @param address first address of part to be deleted
      * @param len length of that part
      */
-    public void delete (int address, int len)
-    {
+    public void delete(int address, int len) {
         if (theArray == null)
             return; // do nuthing on nuthing
         if (len > theArray.length)
             len = theArray.length;
-        int newsize = theArray.length-len;
-        int begin2part = address+len;
+        int newsize = theArray.length - len;
+        int begin2part = address + len;
         byte[] b1 = new byte[newsize];
-        System.arraycopy (theArray, 0, b1, 0, address);
-        System.arraycopy (theArray, begin2part, b1, address, newsize-address);
+        System.arraycopy(theArray, 0, b1, 0, address);
+        System.arraycopy(theArray, begin2part, b1, address, newsize - address);
         theArray = b1;
     }
-    
+
     /**
      * Inserts bytes into array
      * @param address offset
      * @param data data to be inserted at offset
      */
-    public void insert (int address, byte[] data)
-    {
+    public void insert(int address, byte[] data) {
         byte[] old = theArray;
-        if (old == null || address > theArray.length)
-        {
-            realloc (address + data.length);
+        if (old == null || address > theArray.length) {
+            realloc(address + data.length);
+        } else {
+            realloc(theArray.length + data.length);
+            System.arraycopy(old, address, theArray, address + data.length, old.length - address);
         }
-        else
-        {
-            realloc (theArray.length + data.length);
-            System.arraycopy (old, address, theArray, address+data.length, old.length-address);
-        }
-        System.arraycopy (data, 0, theArray, address, data.length);
+        System.arraycopy(data, 0, theArray, address, data.length);
     }
-    
+
     /**
      * Writes bytes into array
      * @param address first address to be written to
      * @param data data to be written
      */
-    public void put (int address, byte... data)
-    {
-        realloc (address + data.length);
-        System.arraycopy (data, 0, theArray, address, data.length);
+    public void put(int address, byte... data) {
+        realloc(address + data.length);
+        System.arraycopy(data, 0, theArray, address, data.length);
     }
 
 //    /**
@@ -151,24 +133,22 @@ public class DynamicByteArray
 //        put (address, b);
 //    }
 
-    public boolean getBit (int bitAddress)
-    {
-        int offset = bitAddress/8;
-        int bitnum = 1 << (bitAddress%8);
-        byte[] memByte = get (offset, 1);
+    public boolean getBit(int bitAddress) {
+        int offset = bitAddress / 8;
+        int bitnum = 1 << (bitAddress % 8);
+        byte[] memByte = get(offset, 1);
         return (memByte[0] & bitnum) == bitnum;
     }
 
-    public void putBit (boolean b, int bitAddress)
-    {
-        int offset = bitAddress/8;
-        int bitnum = 1 << (bitAddress%8);
-        byte[] memByte = get (offset, 1);
+    public void putBit(boolean b, int bitAddress) {
+        int offset = bitAddress / 8;
+        int bitnum = 1 << (bitAddress % 8);
+        byte[] memByte = get(offset, 1);
         if (b)
-            memByte[0] = (byte)(memByte[0] | bitnum);
+            memByte[0] = (byte) (memByte[0] | bitnum);
         else
-            memByte[0] = (byte)(memByte[0] & ~bitnum);
-        put (offset, memByte[0]);
+            memByte[0] = (byte) (memByte[0] & ~bitnum);
+        put(offset, memByte[0]);
     }
 
     /**
@@ -177,25 +157,21 @@ public class DynamicByteArray
      * @param length Byte length
      * @return The Byte
      */
-    public int getVByte (int bitAddress, int length)
-    {
+    public int getVByte(int bitAddress, int length) {
         int res = 0;
-        while (length > 0)
-        {
+        while (length > 0) {
             length--;
             if (getBit(bitAddress))
-                res |= (1<<length);
+                res |= (1 << length);
             bitAddress++;
         }
         return res;
     }
 
-    public void putVByte (int bitAddress, int length, int data)
-    {
-        while (length > 0)
-        {
+    public void putVByte(int bitAddress, int length, int data) {
+        while (length > 0) {
             length--;
-            boolean bit = ((data & (1<<length)) != 0);
+            boolean bit = ((data & (1 << length)) != 0);
             putBit(bit, bitAddress);
             bitAddress++;
         }
@@ -205,11 +181,10 @@ public class DynamicByteArray
      * Inserts bytes at the end
      * @param data new data bytes
      */
-    public void append (byte[] data)
-    {
+    public void append(byte[] data) {
         int len = getCurrentSize();
-        realloc (len + data.length);
-        System.arraycopy (data, 0, theArray, len, data.length);
+        realloc(len + data.length);
+        System.arraycopy(data, 0, theArray, len, data.length);
     }
 
     /**
@@ -218,22 +193,18 @@ public class DynamicByteArray
      * @param b Byte value
      * @param num Number of byte filled with that value
      */
-    public void fill (int address, byte b, int num)
-    {
+    public void fill(int address, byte b, int num) {
         byte[] bytes = new byte[num];
-        for (int s=0; s<num; s++)
-            bytes[s] = b;
-        put (address, bytes);
+        Arrays.fill(bytes, b);
+        put(address, bytes);
     }
 
     /**
      * Clears the buffer but keeps size
      */
-    public void clear()
-    {
-        if (getCurrentSize() > 0)
-        {
-            Arrays.fill(theArray, (byte)0);
+    public void clear() {
+        if (getCurrentSize() > 0) {
+            Arrays.fill(theArray, (byte) 0);
         }
     }
 
@@ -243,22 +214,19 @@ public class DynamicByteArray
      * @param len number of bytes to be read
      * @return the read bytes
      */
-    public byte[] get (int address, int len)
-    {
+    public byte[] get(int address, int len) {
         byte[] res = new byte[len];
-        realloc (address + len);
-        System.arraycopy (theArray, address, res, 0, len);
+        realloc(address + len);
+        System.arraycopy(theArray, address, res, 0, len);
         return res;
     }
 
-    public void reverse (int address, int len)
-    {
+    public void reverse(int address, int len) {
         byte[] part = get(address, len);
         int i = 0;
         int j = part.length - 1;
         byte tmp;
-        while (j > i)
-        {
+        while (j > i) {
             tmp = part[j];
             part[j] = part[i];
             part[i] = tmp;
@@ -269,8 +237,7 @@ public class DynamicByteArray
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return Arrays.toString(theArray);
     }
 
@@ -280,18 +247,15 @@ public class DynamicByteArray
      * @param fragment max length of fragment
      * @return array of dynArrays representing fragments
      */
-    public DynamicByteArray[] split (int fragment)
-    {
+    public DynamicByteArray[] split(int fragment) {
         SplitHelper sh = new SplitHelper(getCurrentSize(), fragment);
         DynamicByteArray[] res = new DynamicByteArray[sh.getTotalblocks()];
         int s;
-        for (s=0; s<sh.getBlocks(); s++)
-        {
-            res[s] = new DynamicByteArray(get(s*fragment, fragment));
+        for (s = 0; s < sh.getBlocks(); s++) {
+            res[s] = new DynamicByteArray(get(s * fragment, fragment));
         }
-        if (sh.getRemainder() != 0)
-        {
-            res[s] = new DynamicByteArray(get(s*fragment, sh.getRemainder()));
+        if (sh.getRemainder() != 0) {
+            res[s] = new DynamicByteArray(get(s * fragment, sh.getRemainder()));
         }
         return res;
     }
@@ -303,17 +267,15 @@ public class DynamicByteArray
      * @param str the source string
      * @param len number of characters used
      */
-    public void setString (int address, String str, int len)
-    {
+    public void setString(int address, String str, int len) {
         byte[] b = new byte[len];
-        for (int s=0; s<b.length; s++)
-        {
+        for (int s = 0; s < b.length; s++) {
             if (str.length() > s)
-                b[s] = (byte)str.charAt(s);
+                b[s] = (byte) str.charAt(s);
             else
                 b[s] = ' ';
         }
-        put (address, b);
+        put(address, b);
     }
 
     /**
@@ -321,9 +283,8 @@ public class DynamicByteArray
      * @param address start address of string in BA
      * @param str the source string
      */
-    public void setString (int address, String str)
-    {
-        put (address, str.getBytes());
+    public void setString(int address, String str) {
+        put(address, str.getBytes());
     }
 
 }

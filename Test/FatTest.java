@@ -18,9 +18,9 @@ public class FatTest
     @Test
     public void testWriteFatEntry ()
     {
-        byte x[] = {0, 0, 0};
+        byte[] x = {0, 0, 0};
         Fat12Entry fx = new Fat12Entry(x);
-        byte y[] = {0x23, 0x61, 0x45};
+        byte[] y = {0x23, 0x61, 0x45};
 
         fx.setFatEntryValue(0, 0x123);
         fx.setFatEntryValue(1, 0x456);
@@ -30,8 +30,8 @@ public class FatTest
 //        System.out.println(Integer.toHexString(x[2]));
         int a = fx.getFatEntryValue(0);
         int b = fx.getFatEntryValue(1);
-        Assert.assertEquals(a, 0x123);
-        Assert.assertEquals(b, 0x456);
+        Assert.assertEquals(0x123, a);
+        Assert.assertEquals(0x456, b);
     }
 
 

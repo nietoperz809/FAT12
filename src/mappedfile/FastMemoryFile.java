@@ -105,6 +105,7 @@ public class FastMemoryFile implements MemoryFile
     @Override
     public byte[] clone ()
     {
+        byte[] bytes = (byte[]) super.clone();
         return _arr.getArray().clone();
     }
 

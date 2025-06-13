@@ -7,12 +7,9 @@
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import mappedfile.MemoryFile;
-import misc.ByteCVT;
-import misc.RandomArrays;
-import org.junit.Test;
+import misc.Chunk;
 
 /**
  *
@@ -46,11 +43,11 @@ class Tester
 //        System.out.println(Arrays.toString(res4));
     }    
     
-    public static void testRandom (MemoryFile mem, ArrayList<RandomArrays.Chunk> ch) throws Exception
+    public static void testRandom (MemoryFile mem, ArrayList<Chunk> ch) throws Exception
     {
         System.out.print(mem.getClass().toString() + " --> ");
         Instant start = Instant.now();
-        for (RandomArrays.Chunk c : ch)
+        for (Chunk c : ch)
         {
             mem.write(c.address, c.array);
         }
